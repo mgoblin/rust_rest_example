@@ -1,23 +1,37 @@
 #[macro_use]
 extern crate rbatis;
 
-use fast_log::config::Config;
-use rbatis::rbatis::Rbatis;
-use rbatis::crud::CRUD;
-use rbatis::PageRequest;
-use rbatis::Page;
-use rbatis::wrapper::Wrapper;
+use serde::Deserialize;
 
-use actix_web::{get, web, App, HttpServer, Responder};
+use fast_log::config::Config;
+use rbatis::PageRequest;
+
+use actix_web::{get, web, middleware, App, HttpServer, Responder};
+use actix_web::web::{Data, Query};
 
 use crate::entity::{Users};
+use crate::service::UsersService;
 
 mod migrations;
 mod entity;
+mod service;
 
-#[get("/hello")]
-async fn list() -> impl Responder {
-    format!("Hello!")
+#[derive(Debug, Deserialize)]
+pub struct Pagination {
+    page_no: Option<u64>,
+    page_size: Option<u64>,
+}
+
+#[get("/")]
+async fn list(us: Data<UsersService>, page: Query<Pagination>) -> impl Responder {
+    let users_service = us.get_ref();
+    let p = page.into_inner();
+    let users = users_service.list(
+        &PageRequest::new(
+            p.page_no.unwrap_or(0),
+            p.page_size.unwrap_or(10)
+        )).await;
+    web::Json(users)
 }
 
 #[tokio::main]
@@ -36,19 +50,12 @@ async fn main() -> std::io::Result<()> {
     log::info!("Migrate database structure");
     migrations::migrate(&mconn_string).await.unwrap();
 
-    let rb = Rbatis::new();
-
-    rb.link(&rconn_string).await.unwrap();
-
-    let req = PageRequest::new(1, 2);
-    let wraper = Wrapper::new(&rbatis::DriverType::Postgres)
-        .order_by(true, &["name"]);
-
-    let users: Page<Users> = rb.fetch_page_by_wrapper(wraper,  &req).await.unwrap();
-    log::info!("{}", serde_json::to_string(&users).unwrap());
-
-    HttpServer::new(|| {
-        App::new().service(list)
+    let data: Data<UsersService> = Data::new(UsersService::new(&rconn_string).await);
+    HttpServer::new(move || {
+        App::new()
+            .app_data(data.clone())
+            .wrap(middleware::Logger::default())
+            .service(list)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
