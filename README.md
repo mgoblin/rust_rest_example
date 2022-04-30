@@ -1,5 +1,13 @@
 # Rust Rest service example using postgres, actix-web, rbatis and refinery
 
-This is Rust language learning project.
+This is my Rust language learning project.
 
-As a Java Spring Bootbackend developer i decide to experiment with simple rest/json CRUD webservice on top of postgres DB.
+As a Java Spring Boot backend developer i decide to experiment with simple rest/json CRUD webservice on top of postgres DB.
+
+## Rest service functionality
+User has unique id and name.
+
+WebService endpoints
+
+- GET /users?page_no=0&page_size=10 return paginated json list of users ordered by name. page_no and page_size query parameters are optional.
+- GET /users/{id} - return user with id as json or http 404 if user not found

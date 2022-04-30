@@ -22,7 +22,7 @@ pub struct Pagination {
     page_size: Option<u64>,
 }
 
-#[get("/")]
+#[get("/users")]
 async fn list(us: Data<UsersService>, page: Query<Pagination>) -> impl Responder {
     let users_service = us.get_ref();
     let p = page.into_inner();
