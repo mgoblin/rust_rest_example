@@ -1,9 +1,9 @@
-use actix_web::{Responder, web, get, http, HttpResponse};
+use actix_web::{Responder, web, get, post, http, HttpResponse, Result};
 use actix_web::web::{Data, Query};
 use actix_web::http::header::ContentType;
 use actix_web::http::StatusCode;
 use rbatis::PageRequest;
-use crate::{UsersService};
+use crate::{Users, UsersService};
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Deserialize)]
@@ -30,7 +30,7 @@ impl UserNotFoundError<'static> {
 fn json_response<T: Serialize>(obj: T, http_status: StatusCode) -> HttpResponse {
     HttpResponse::build(http_status)
         .insert_header(ContentType::json())
-        .body(serde_json::to_string( &obj).unwrap())
+        .body(serde_json::to_string(&obj).unwrap())
 }
 
 #[get("/users")]
@@ -40,7 +40,7 @@ pub async fn list(us: Data<UsersService>, page: Query<Pagination>) -> impl Respo
     let users = users_service.list(
         &PageRequest::new(
             p.page_no.unwrap_or(0),
-            p.page_size.unwrap_or(10)
+            p.page_size.unwrap_or(10),
         )).await;
     web::Json(users)
 }
@@ -52,6 +52,15 @@ pub async fn get_user_by_id(us: Data<UsersService>, uid: web::Path<u64>) -> impl
     let maybe_user = users_service.find_by_id(user_id).await;
     match maybe_user {
         Some(user) => json_response(&user, http::StatusCode::OK),
-        None => json_response(&UserNotFoundError::new(user_id), http::StatusCode::NOT_FOUND),
+        None => json_response(&UserNotFoundError::new(user_id), StatusCode::NOT_FOUND),
     }
+}
+
+#[post("users")]
+pub async fn create_user(us: Data<UsersService>, n: web::Json<String>) -> Result<impl Responder> {
+    let user = Users {
+        id: 1,
+        name: n.to_string(),
+    };
+    Ok(web::Json(user))
 }
