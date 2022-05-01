@@ -1,9 +1,9 @@
-use actix_web::{Responder, web, get, post, http, HttpResponse, Result};
+use actix_web::{Responder, web, get, post, HttpResponse, Result};
 use actix_web::web::{Data, Query};
 use actix_web::http::header::ContentType;
 use actix_web::http::StatusCode;
-use rbatis::PageRequest;
-use crate::{Users, UsersService};
+use rbatis::{PageRequest};
+use crate::{UsersService};
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Deserialize)]
@@ -48,19 +48,16 @@ pub async fn list(us: Data<UsersService>, page: Query<Pagination>) -> impl Respo
 #[get("users/{id}")]
 pub async fn get_user_by_id(us: Data<UsersService>, uid: web::Path<u64>) -> impl Responder {
     let users_service = us.get_ref();
-    let user_id = uid.into_inner();
+    let user_id = uid.clone();
     let maybe_user = users_service.find_by_id(user_id).await;
     match maybe_user {
-        Some(user) => json_response(&user, http::StatusCode::OK),
+        Some(user) => json_response(&user, StatusCode::OK),
         None => json_response(&UserNotFoundError::new(user_id), StatusCode::NOT_FOUND),
     }
 }
 
 #[post("users")]
 pub async fn create_user(us: Data<UsersService>, n: web::Json<String>) -> Result<impl Responder> {
-    let user = Users {
-        id: 1,
-        name: n.to_string(),
-    };
+    let user = us.get_ref().create_user(&n[..]).await;
     Ok(web::Json(user))
 }

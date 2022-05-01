@@ -30,4 +30,11 @@ impl UsersService {
     pub async fn find_by_id(&self, id: u64) -> std::option::Option<Users> {
         self.rb.fetch_by_column("id", id).await.unwrap()
     }
+
+    pub async fn create_user(&self, uname: &str) -> Users {
+        Users {
+            id: 1,
+            name: uname.to_string(),
+        }
+    }
 }
