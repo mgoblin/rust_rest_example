@@ -21,10 +21,10 @@ impl UsersService {
     }
 
     pub async fn list(&self, req: &PageRequest) -> Page<Users> {
-        let wraper = Wrapper::new(&rbatis::DriverType::Postgres)
+        let wrapper = Wrapper::new(&rbatis::DriverType::Postgres)
             .order_by(true, &["name"]);
 
-        self.rb.fetch_page_by_wrapper(wraper,  req).await.unwrap()
+        self.rb.fetch_page_by_wrapper(wrapper,  req).await.unwrap()
     }
 
     pub async fn find_by_id(&self, id: u64) -> std::option::Option<Users> {
@@ -32,9 +32,13 @@ impl UsersService {
     }
 
     pub async fn create_user(&self, uname: &str) -> Users {
+        let uid = UsersService::insert_with_identity(&self.rb, uname).await.unwrap();
         Users {
-            id: 1,
+            id: uid,
             name: uname.to_string(),
         }
     }
+
+    #[py_sql("insert into users(name) values (#{uname}) RETURNING id;")]
+    async fn insert_with_identity(rb: &Rbatis, uname: &str) -> u64 { impled!() }
 }
