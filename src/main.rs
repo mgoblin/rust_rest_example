@@ -9,11 +9,11 @@ use rbatis::PageRequest;
 use actix_web::{get, web, middleware, App, HttpServer, Responder};
 use actix_web::web::{Data, Query};
 
-use crate::entity::{Users};
+use crate::model::{Users};
 use crate::service::UsersService;
 
 mod migrations;
-mod entity;
+mod model;
 mod service;
 
 #[derive(Debug, Deserialize)]
