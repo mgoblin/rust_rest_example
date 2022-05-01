@@ -1,4 +1,4 @@
-use actix_web::{Responder, web, get, post, HttpResponse, Result};
+use actix_web::{Responder, web, get, post, HttpResponse};
 use actix_web::web::{Data, Query};
 use actix_web::http::header::ContentType;
 use actix_web::http::StatusCode;
@@ -63,8 +63,8 @@ pub async fn get_user_by_id(us: Data<UsersService>, uid: web::Path<u64>) -> impl
 }
 
 #[post("users")]
-pub async fn create_user(us: Data<UsersService>, nuser: web::Json<NewUser>) -> Result<impl Responder> {
+pub async fn create_user(us: Data<UsersService>, nuser: web::Json<NewUser>) -> impl Responder {
     let uname = nuser.into_inner().name;
     let user = us.get_ref().create_user(&uname).await;
-    Ok(web::Json(user))
+    web::Json(user)
 }
