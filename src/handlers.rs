@@ -19,7 +19,7 @@ struct UserNotFoundError<'a> {
 }
 
 #[derive(Deserialize)]
-pub struct NewUser {
+pub struct UserName {
     pub name: String,
 }
 
@@ -63,7 +63,7 @@ pub async fn get_user_by_id(us: Data<UsersService>, uid: web::Path<u64>) -> impl
 }
 
 #[post("users")]
-pub async fn create_user(us: Data<UsersService>, nuser: web::Json<NewUser>) -> impl Responder {
+pub async fn create_user(us: Data<UsersService>, nuser: web::Json<UserName>) -> impl Responder {
     let uname = nuser.into_inner().name;
     let user = us.get_ref().create_user(&uname).await;
     web::Json(user)
