@@ -11,3 +11,5 @@ WebService endpoints
 
 - GET /users?page_no=0&page_size=10 return paginated json list of users ordered by name. page_no and page_size query parameters are optional.
 - GET /users/{id} - return user with id as json or http 404 if user not found
+- POST /user with http request body {name: <user name>} create user then return http 200 and user json
+- POST /user/{id} with request body {name: <user name>} update user then return http 200 and user json or 404 if user not found
