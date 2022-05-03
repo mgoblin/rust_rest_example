@@ -39,6 +39,19 @@ impl UsersService {
         }
     }
 
+    pub async fn update_user(&self, uuser: &Users) -> Option<Users> {
+        log::info!("update_user {:?}", uuser);
+        let result = UsersService::update_with_identity(&self.rb, uuser).await.unwrap();
+        log::info!("update result = {:?}", result);
+        match result {
+            Some(uid) => Some(Users{id: uid, name: uuser.name.clone()}),
+            None => None
+        }
+    }
+
     #[py_sql("insert into users(name) values (#{uname}) RETURNING id;")]
     async fn insert_with_identity(rb: &Rbatis, uname: &str) -> u64 { impled!() }
+
+    #[py_sql("update users set name = #{uuser.name} where id = #{uuser.id} RETURNING id;")]
+    async fn update_with_identity(rb: &Rbatis, uuser: &Users) -> Option<u64> { impled!() }
 }

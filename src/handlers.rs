@@ -3,7 +3,7 @@ use actix_web::web::{Data, Query};
 use actix_web::http::header::ContentType;
 use actix_web::http::StatusCode;
 use rbatis::{PageRequest};
-use crate::{UsersService};
+use crate::{Users, UsersService};
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Deserialize)]
@@ -68,3 +68,18 @@ pub async fn create_user(us: Data<UsersService>, nuser: web::Json<UserName>) -> 
     let user = us.get_ref().create_user(&uname).await;
     web::Json(user)
 }
+
+#[post("users/{id}")]
+pub async fn update_user(us: Data<UsersService>, uid: web::Path<u64>, nuser: web::Json<UserName>) -> impl Responder {
+    let users_service = us.get_ref();
+    let user_id = uid.clone();
+    let user_name = nuser.into_inner().name;
+    let uuser = Users {
+        id: user_id,
+        name: user_name
+    };
+    let result = users_service.update_user(&uuser).await;
+    let status_code = if result.is_some() { StatusCode::OK } else { StatusCode::NOT_FOUND };
+    json_response(uuser, status_code)
+}
+
