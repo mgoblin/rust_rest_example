@@ -1,2 +1,2 @@
 [workspace]
-members = ["step1", "day1_1_numbers"]
+members = ["step1", "day1_1_numbers", "day1_1_enums", "day1_1_strings"]

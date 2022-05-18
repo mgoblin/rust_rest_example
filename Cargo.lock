@@ -574,7 +574,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day1_1_enums"
+version = "0.1.0"
+
+[[package]]
 name = "day1_1_numbers"
+version = "0.1.0"
+
+[[package]]
+name = "day1_1_strings"
 version = "0.1.0"
 
 [[package]]
