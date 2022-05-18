@@ -6,7 +6,9 @@ fn main() {
 
     let string_slice: &str = &string1[..];
 
-    println!("{} {} {} {}", string1, string2, string_literal, string_slice);
+    let string3 = String::from(string_slice);
+
+    println!("{} {} {} {} {}", string1, string2, string_literal, string_slice, string3);
 
     string1.push_str(" and new part");
     let string_slice2 = &string1[..];
