@@ -574,6 +574,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "day1_1_numbers"
+version = "0.1.0"
+
+[[package]]
 name = "der"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
