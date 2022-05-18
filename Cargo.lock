@@ -590,6 +590,10 @@ name = "day1_1_strings"
 version = "0.1.0"
 
 [[package]]
+name = "day1_2_struct_declare"
+version = "0.1.0"
+
+[[package]]
 name = "der"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
