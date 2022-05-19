@@ -3,5 +3,5 @@ members = [
     "step1",
     "day1_1_numbers", "day1_1_enums", "day1_1_strings", "day1_1_immutability_and_refs",
     "day1_2_struct_declare",
-    "day2_1_functions_clousures"
+    "day2_1_functions_clousures", "day2_2_dependencies"
 ]
