@@ -73,6 +73,10 @@ fn main() {
     let dog = Dog::new("Lucky");
     println!("Its a dog {} that say {}", dog.name(), dog.greet());
 
-    let fish = Fish::new(Color::Red);
-    println!("Its a fish {} that say {}", fish.color(), fish.greet());
+    let red_fish = Fish::new(Color::Red);
+    let green_fish = Fish::new(Color::Green);
+    let blue_fish = Fish::new(Color::Blue);
+    println!("Its a fish {} that say {}", red_fish.color(), red_fish.greet());
+    println!("Its a fish {} that say {}", green_fish.color(), green_fish.greet());
+    println!("Its a fish {} that say {}", blue_fish.color(), blue_fish.greet());
 }
