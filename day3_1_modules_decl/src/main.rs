@@ -1,23 +1,6 @@
 mod pets {
     use std::fmt::Display;
 
-    #[derive(Debug, PartialEq, Hash)]
-    pub struct Dog {
-        name: String,
-    }
-
-    impl Dog {
-        pub fn new(name: &str) -> Dog {
-            Dog {
-                name: String::from(name),
-            }
-        }
-
-        pub fn name(&self) -> &str {
-            &self.name[..]
-        }
-    }
-
     #[derive(Debug, Clone, Copy, PartialEq, Hash)]
     pub enum Color {
         Red, Green, Blue
@@ -34,42 +17,75 @@ mod pets {
         }
     }
 
-    #[derive(Debug, Clone, PartialEq, Hash)]
-    pub struct Fish {
-        color: Color,
-    } 
-
-    impl Fish {
-        pub fn new(c: Color) -> Fish {
-            Fish {
-                color: c
-            }
-        }
-
-        pub fn color(&self) -> Color {
-            self.color
-        }
-    }
-
     pub trait Greeting {
         fn greet(&self) -> String {
             String::from("Silent pet")
         }
     }
 
-    impl Greeting for Dog {
-        fn greet(&self) -> String {
-            String::from("Gaw Gaw")
+    pub mod anrimals {
+        
+        use super::Greeting;
+
+        #[derive(Debug, Clone, PartialEq, Hash)]
+         pub struct Dog {
+             name: String,
+         }
+
+        impl Dog {
+            pub fn new(name: &str) -> Dog {
+                Dog {
+                    name: String::from(name),
+                }
+            }
+
+            pub fn name(&self) -> &str {
+                &self.name[..]
+            }
         }
+
+
+         impl Greeting for Dog {
+            fn greet(&self) -> String {
+                String::from("Gaw Gaw")    
+            }
+         }
     }
 
-    impl Greeting for Fish {}
+    pub mod fish {
 
+        use super::{Greeting, Color};
+
+        #[derive(Debug, Clone, PartialEq, Hash)]
+        pub struct Fish {
+            color: Color,
+        } 
+
+        impl Fish {
+            pub fn new(c: Color) -> Fish {
+                Fish {
+                    color: c
+                }
+            }
+
+            pub fn color(&self) -> Color {
+                self.color
+            }
+        }
+
+        impl Greeting for Fish {}
+
+    }
 }
 
-use pets::{Dog, Fish, Color, Greeting};
+use pets::{Color, Greeting};
+use pets::anrimals::{Dog};
+use pets::fish::Fish;
 
 fn main() {
+    let blue = Color::Blue;
+    println!("{}", blue);
+
     let dog = Dog::new("Lucky");
     println!("Its a dog {} that say {}", dog.name(), dog.greet());
 
