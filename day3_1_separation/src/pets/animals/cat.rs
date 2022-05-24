@@ -14,10 +14,10 @@ pub const BLACK: RgbColor = RgbColor {red: 0, green: 0, blue: 0};
 
 impl Display for RgbColor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let color = match self {
-            &BLACK => String::from("Black"),
-            &WHITE => String::from("White"),
-            &RgbColor { red: r, green: g, blue:b } => {
+        let color = match *self {
+            BLACK => String::from("Black"),
+            WHITE => String::from("White"),
+            RgbColor { red: r, green: g, blue:b } => {
                 format!("RGB color r:{}, g:{}, b:{}", r, g, b)
             },
         };
