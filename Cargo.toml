@@ -6,7 +6,7 @@ members = [
     "day2_1_functions_clousures", 
     "day2_2_dependencies",
 
-    "day3_1_modules_decl",
+    "day3_1_modules_decl", "day3_1_separation",
 
     "step1"
     #"step_final"
