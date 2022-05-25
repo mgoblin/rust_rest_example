@@ -2,10 +2,11 @@ mod structs;
 mod enums;
 mod functions;
 mod bounds;
+mod traits;
 
 use structs::*;
 use functions::tuple;
-
+use traits::Printable;
 
 fn main() {
     let point1 = Point {x: 0, y: 10};
@@ -37,6 +38,11 @@ fn main() {
     println!("{}", non_blank(""));    // None
 
     println!("{}", bounds::max_of(2, 3));
+
+    let u8n: u8 = 150;
+    println!("{}", u8n.pretty("unsigned byte:"));
+
+    println!("{}", u8n.pretty(String::from("just byte:")));
 }
 
 fn non_blank(s: &str) -> enums::Option<String> {
