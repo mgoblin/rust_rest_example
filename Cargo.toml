@@ -7,6 +7,7 @@ members = [
     "day2_2_dependencies",
 
     "day3_1_modules_decl", "day3_1_separation",
+    "day3_2_generics",
 
     "step1"
     #"step_final"
