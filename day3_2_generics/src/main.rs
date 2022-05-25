@@ -1,6 +1,7 @@
 mod structs;
 mod enums;
 mod functions;
+mod bounds;
 
 use structs::*;
 use functions::tuple;
@@ -34,6 +35,8 @@ fn main() {
     println!("{}", non_blank(" z ")); // Some(z)
     println!("{}", non_blank("  "));  // None
     println!("{}", non_blank(""));    // None
+
+    println!("{}", bounds::max_of(2, 3));
 }
 
 fn non_blank(s: &str) -> enums::Option<String> {
