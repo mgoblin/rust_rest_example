@@ -3,10 +3,12 @@ mod enums;
 mod functions;
 mod bounds;
 mod traits;
+mod where_bounds;
 
 use structs::*;
 use functions::tuple;
 use traits::Printable;
+use where_bounds::OPrintable;
 
 fn main() {
     let point1 = Point {x: 0, y: 10};
@@ -41,8 +43,12 @@ fn main() {
 
     let u8n: u8 = 150;
     println!("{}", u8n.pretty("unsigned byte:"));
-
     println!("{}", u8n.pretty(String::from("just byte:")));
+
+    let w_point = crate::where_bounds::Point {x: 11, y: 7};
+    println!("{}", w_point.pretty());
+
+    println!("{}", where_bounds::max_of(2, 3));
 }
 
 fn non_blank(s: &str) -> enums::Option<String> {
