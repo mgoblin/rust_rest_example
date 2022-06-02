@@ -1,6 +1,5 @@
 use std::{error::Error, fmt::Display};
-
-use crate::consume::User;
+use crate::common::User;
 
 #[derive(Debug)]
 pub struct FindUserError {

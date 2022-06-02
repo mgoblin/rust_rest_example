@@ -1,3 +1,4 @@
+mod common;
 mod consume;
 mod error_type;
 

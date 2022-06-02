@@ -1,23 +1,4 @@
-
-#[derive(Debug)]
-pub struct User {
-    id: u64,
-    name: String
-} 
-
-impl User {
-    pub fn id(&self) -> u64 {
-        self.id
-    }
-
-    pub fn name(&self) -> String {
-        self.name.clone()
-    }
-
-    pub fn new(uid: u64, uname: &str) -> User {
-        User {id: uid, name: String::from(uname)}
-    }
-}
+use crate::common::User;
 
 #[derive(Debug)]
 pub struct FindUserError {
@@ -34,7 +15,7 @@ pub fn find_user(uid: u64) -> Result<Option<User>, FindUserError> {
         Err(FindUserError {message: format!("Find user error. User id {}", uid)})
     } else if (10..20).contains(&uid) {
         let uname = format!("user name {}", uid);
-        let user = User {id: uid, name: uname};
+        let user = User::new(uid, uname.as_str());
         Ok(Some(user))
     } else {
         Ok(None)
