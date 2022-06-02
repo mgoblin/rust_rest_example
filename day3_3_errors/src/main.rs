@@ -1,6 +1,10 @@
 mod consume;
+mod error_type;
 
-pub use consume::*;
+use std::error::Error;
+
+use consume::*;
+use error_type::*;
 
 fn main() {
     // Get result
@@ -12,7 +16,7 @@ fn main() {
     println!("{:#?}", res_user3);
 
     // Fallback to None
-    let fallback_user = find_user(1).unwrap_or_else(|_| None);
+    let fallback_user = find_user(1).unwrap_or(None);
     println!("{:#?}", fallback_user);
     
     // React to the error
@@ -34,45 +38,25 @@ fn main() {
         println!("User was found");
     }
 
-    if let Ok(Some(u)) = find_user(11) {
-        println!("{:#?} was found", u);
+    if let Ok(Some(usr)) = find_user(11) {
+        println!("{:#?} was found", usr.name());
     }
 
     // Wrap and bubble inside find_user2
     println!("{:#?}", find_user2(11));
 
     // Map errors and values
-    print!("{:#?}", find_user3(11));
+    println!("{:#?}", find_user3(11));
 
- }
+    if let Err(err) = e_find_user2(1) {
+        println!("{}. Source: {:?}", err, err.source());
+    }
 
- fn find_user3(uid: u64) -> Result<User, CommonError> {
-    find_user(uid)
-    .map_err(|e| CommonError {message: e.message})?
-    .ok_or(CommonError {message: String::from("User not found")})
-    .and_then(|user| 
-        if user.id() == 11 {
-            Err(CommonError { message: String::from("Access denied")})
-        } else {
-            Ok(user)
-        }  
-    )    
- }
+    if let Err(err) = e_find_user2(11){
+        println!("{}. Source: {:?}", err, err.source());
+    }
 
- fn find_user2(uid: u64) -> Result<User, CommonError> {
-    let r = find_user(uid);
-    if let Ok(Some(user)) = r {
-        if user.id() == 11 {
-            let err = CommonError { message: String::from("Access denied")};
-            Err(err) 
-        } else {
-            Ok(user)
-        }
-    } else if let Ok(None) = r {
-        let err = CommonError { message: String::from("User not found")};
-        Err(err)
-    } else {
-        let err = CommonError { message: r.unwrap_err().message};
-        Err(err)
-    }    
+    if let Err(err) = e_find_user2(20) { 
+        println!("{}. Source: {:?}", err, err.source());
+    }
  }
