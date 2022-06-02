@@ -472,6 +472,10 @@ name = "day3_2_generics"
 version = "0.1.0"
 
 [[package]]
+name = "day3_3_errors"
+version = "0.1.0"
+
+[[package]]
 name = "derive_more"
 version = "0.99.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
