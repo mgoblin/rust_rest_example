@@ -26,12 +26,12 @@ One of the paths to learn new language or technology is to implement some applic
 I will try to implement Rest service application around Postrgres DB table users on Linux.
 When evaluate a new technology I prefer incremental approach:
 
-Part1
+### Part1
 
 1. Setup development environment: compiler, IDE, DB and so on. Run "hello world"
 2. Grasp the language basics. Structure of application, data types,decomposition, reuse, and dealing with complexity.
 
-Part 2
+### Part 2
 
 3. Define basic functional requirements.
 4. Choose frameworks and libraries
