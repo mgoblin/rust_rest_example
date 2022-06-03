@@ -1,4 +1,5 @@
 # Create REST service on Rust from scratch to production journey
+{:.no_toc}
 
 * TOC
 {:toc}
