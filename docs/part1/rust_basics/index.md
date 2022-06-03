@@ -8,7 +8,9 @@
 
 As a Rust developer i want to write and run single threaded one file programs in Rust playground.
 
-[Numbers, enums, strings. Variables and refrences](./day1/numbers.md)
+* [Numbers, enums, strings. Variables and refrences](./day1/numbers.md)
+* [Structs](./day1/structs.md)
+
 
 # Day 2. Program decomposition
 As Rust developer i can write simple single threaded programs. Source code is decomposed by functions and types and can use external libraries inside main.rs file.

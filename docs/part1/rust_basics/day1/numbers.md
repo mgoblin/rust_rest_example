@@ -136,4 +136,4 @@ Rust core gives the impression of a well-designed programming language with few 
 let's keep diving.
 
 ---
-[<< Prev](../index.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
+[<< Prev](../index.md) &ensp; [Up](../index.md) &ensp; [Next >>](./structs.md)  
