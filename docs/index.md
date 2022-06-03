@@ -1,5 +1,7 @@
 # Create REST service on Rust from scratch to production journey
 
+1. The generated Toc will be an ordered list{:toc}
+
 ## Motivation (you can skip it)
 
 **Well known programming languages**
