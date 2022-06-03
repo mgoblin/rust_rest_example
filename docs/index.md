@@ -26,12 +26,13 @@ One of the paths to learn new language or technology is to implement some applic
 I will try to implement Rest service application around Postrgres DB table users on Linux.
 When evaluate a new technology I prefer incremental approach:
 
-### Part1
+### Part1. From zero to Rust junior
 
 1. [Setup development environment: compiler, IDE, DB and so on. Run "hello world"](part1/hello.md)
-2. Grasp the language basics. Structure of application, data types,decomposition, reuse, and dealing with complexity.
+2. [Grasp the language basics](part1/rust_basics/index.md). 
+Structure of application, data types,decomposition, reuse, and dealing with complexity.
 
-### Part 2
+### Part 2. REST journey
 
 3. Define basic functional requirements.
 4. Choose frameworks and libraries
