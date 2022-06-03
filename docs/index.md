@@ -29,8 +29,8 @@ When evaluate a new technology I prefer incremental approach:
 
 ### Part1. From zero to Rust junior
 
-1. [Setup development environment: compiler, IDE, DB and so on. Run "hello world"](part1/hello.md)
-2. [Grasp the language basics](part1/rust_basics/index.md). 
+#### [Setup development environment: compiler, IDE, DB and so on. Run "hello world"](part1/hello.md)
+#### [Grasp the language basics](part1/rust_basics/index.md). 
 Structure of application, data types,decomposition, reuse, and dealing with complexity.
 
 ### Part 2. REST journey
