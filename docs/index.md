@@ -28,7 +28,7 @@ When evaluate a new technology I prefer incremental approach:
 
 ### Part1
 
-1. Setup development environment: compiler, IDE, DB and so on. Run "hello world"
+1. [Setup development environment: compiler, IDE, DB and so on. Run "hello world"](part1/hello.md)
 2. Grasp the language basics. Structure of application, data types,decomposition, reuse, and dealing with complexity.
 
 ### Part 2
@@ -37,26 +37,4 @@ When evaluate a new technology I prefer incremental approach:
 4. Choose frameworks and libraries
 5. Start to implements application as a series of steps from "it seems to work" to enterprise ready level 
 
-
-## Setup development environment
-I use Manjaro Linux. 
-Install via package manager Rust, Cargo (Rust dependecy management and build tool), Visual Studio Code with Rust plugin.
-Next steps are to install Postgres and DBeaver (GUI tool for Postgre).
-Thats all.
-
-Create new project. In linux terminal run 
-
-```
-cargo new rust_rest_example` 
-cd rust_rest_example`
-cargo run
-```
-
-After all you can see "Hello wold" in console. And you can see main.rs in src folder with obvious code:
-
-```rust
-fn main() {
-    println!("Hello, world!");
-}
-``` 
 
