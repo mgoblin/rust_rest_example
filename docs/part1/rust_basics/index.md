@@ -10,6 +10,7 @@ As a Rust developer i want to write and run single threaded one file programs in
 
 * [Numbers, enums, strings. Variables and refrences](./day1/numbers.md)
 * [Structs](./day1/structs.md)
+* [Ownership, References and Borrowing](./day1/ownership.md)
 
 
 # Day 2. Program decomposition

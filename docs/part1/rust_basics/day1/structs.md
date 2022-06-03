@@ -348,4 +348,4 @@ Structures are familiar and pretty simple.
 Deriving allow to write clear and concise code on most use cases and override implementation when its really need. 
 
 ---
-[<< Prev](./numbers.md) &ensp; [Up](../index.md) &ensp; [Next >>]()
+[<< Prev](./numbers.md) &ensp; [Up](../index.md) &ensp; [Next >>](./ownership.md)
