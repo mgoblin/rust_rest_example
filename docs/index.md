@@ -43,15 +43,17 @@ Thats all.
 
 Create new project. In linux terminal run 
 
-`cargo new rust_rest_example` 
-
-`cd rust_rest_example`
-
-`cargo run`
+```
+cargo new rust_rest_example` 
+cd rust_rest_example`
+cargo run
+```
 
 After all you can see "Hello wold" in console. And you can see main.rs in src folder with obvious code:
 
-`fn main() {
+```rust
+fn main() {
     println!("Hello, world!");
-}` 
+}
+``` 
 
