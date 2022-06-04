@@ -31,7 +31,8 @@ When evaluate a new technology I prefer incremental approach:
 
 #### [Setup development environment: compiler, IDE, DB and so on. Run "hello world"](part1/hello.md)
 #### [Grasp the language basics](part1/rust_basics/index.md). 
-Structure of application, data types,decomposition, reuse, and dealing with complexity.
+Structure of application, data types,decomposition, reuse, and dealing with complexity. [Rust basics on three days](./part1/rust_basics/index.md) 
+
 
 ### Part 2. REST journey
 
