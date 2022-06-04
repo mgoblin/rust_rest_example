@@ -155,7 +155,7 @@ Predicate function has one char argument and should retrun false if char should 
 Function underscore_unknown_chars iterate input string s chars using for. For each input string char predicate calls and maybe_underscored variable fills char or underscore char depending of predicate function return value.
 Chars accumulates in result string. 
 
-We can declare function and than transfer as an argument of  underscore_unknown_chars
+We can declare function and than use it as an argument of  underscore_unknown_chars
 ```rust
 fn always_undersore(_x: &char) -> bool {false}
 
