@@ -37,7 +37,7 @@ Structure of application, data types,decomposition, reuse, and dealing with comp
 
 3. Define basic functional requirements.
 4. Choose frameworks and libraries
-5. Start to implements application as a series of steps from "it seems to work" to enterprise ready level 
+5. Start to implements application as a series of steps from "it seems to work" to "works fine in local environment" level 
 
 ---
 << Prev &emsp; Up &emsp; [Next >>](./part1/hello.md)
