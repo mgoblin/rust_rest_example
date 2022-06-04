@@ -5,9 +5,11 @@
 {:toc}
 
 # Functions
+Funcions is a basic prorgamming concept. This is named piece of code with input arguments and result (return value). Function call with agruments return a value. In math funcion is a mapping arguments to result. If the result depends only on argument values function is a pure, otherwise it have side effects (get or modify something outside it scope).
+
 ## Declaration
 
-Functions are declared using keyword fn <function_name>(<function args>) -> <return type>
+Functions in Rust are declared using keyword fn <function_name>(<function args>) -> <return type>
 ```rust
 fn say_hello(name: &str) -> String {
     format!("Hello {}", name)
@@ -29,9 +31,10 @@ fn say_hello(name: &str) -> String {
 ```
 
 ## Known Limitations
-Functions in Rust has limitations
-* No tail recursion optimization (Scala has)
+Сompared to Java and Scala functions in Rust have some limitations
+* No tail recursion optimization (as Scala)
 * No varags 
+* No function overloading
 
 ## Inner functions
 Rust enables to declare and call functions inside functions.
@@ -61,6 +64,7 @@ let f = say_hello; // f has value fn (&str) -> String
 
 println!("{}", f("John"));
 ``` 
+
 # Closures
 Closure is an anonymous function (function without name). Unlike functions, closures can capture values from the scope in which they’re defined.
 Closures in Rust has special syntax
