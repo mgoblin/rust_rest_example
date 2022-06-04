@@ -96,6 +96,11 @@ fn say_hello(name: &str) -> String {
 # Functional programming basics
 
 ## Functions and closures as arguments
+Like Java and Scala Rust can accept functions and closures as argument of function.
+
+Lets see example. Function underscore_unknown_chars replace chars in input string to 'underscore' chars.
+First argument is input string (slice). Second argument is underscore char and the last argument is a predicate **function**.
+
 ```rust
 fn underscore_unknown_chars(s: &str, uchar: char, predicate: fn(&char) -> bool) -> String {
     let mut result = String::from("");
@@ -144,8 +149,6 @@ fn main() {
     println!("{}", nu3);
 }
 ```
-Function underscore_unknown_chars replace chars in input string to 'underscore' chars.
-First argument is input string (slice). Second argument is underscore char and the last argument is a predicate **function**.
 
 Predicate function has one char argument and should retrun false if char should be replaced and true if not.  
 
