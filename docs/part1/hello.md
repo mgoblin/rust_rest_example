@@ -1,10 +1,16 @@
 # Setup development environment
 I use Manjaro Linux. 
-Install via package manager Rust, Cargo (Rust dependecy management and build tool), Visual Studio Code with Rust plugin.
+Install via package manager 
+* Rust (compiler)
+* lrust-analyzer (compiler frontend for IDEs)
+* Cargo (Rust dependecy management and build tool)
+* Visual Studio Code with Rust plugin.
 Next steps are to install Postgres and DBeaver (GUI tool for Postgre).
 Thats all.
 
-Create new project. In linux terminal run 
+
+# Create new project. 
+In linux terminal run 
 
 ```
 cargo new rust_rest_example` 
