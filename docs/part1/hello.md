@@ -2,7 +2,7 @@
 I use Manjaro Linux. 
 Install via package manager 
 * Rust (compiler)
-* lrust-analyzer (compiler frontend for IDEs)
+* rust-analyzer (compiler frontend for IDEs)
 * Cargo (Rust dependecy management and build tool)
 * Visual Studio Code with Rust plugin.
 Next steps are to install Postgres and DBeaver (GUI tool for Postgre).
