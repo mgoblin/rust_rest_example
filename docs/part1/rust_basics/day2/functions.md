@@ -495,4 +495,4 @@ assert!(multiply_and_add_2(5) == 12); // (5 * 2) + 2
 Rust has basic functional programming capabilities. Not so obvious as Scala, but good enough.
 
 ---
-[<< Prev](../day1/ownership.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
+[<< Prev](../day1/ownership.md) &ensp; [Up](../index.md) &ensp; [Next >>](./cargo.md)  
