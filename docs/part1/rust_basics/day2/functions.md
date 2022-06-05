@@ -247,7 +247,7 @@ fn f_add_five_cl2() -> impl Fn(i32) -> i32 {
 
 Ok. So far so good. But what is the use of constructing functions? See next section
 
-### Construct functions to generalize computational alogrithms
+### Construct functions as a way to generalize computational alogrithms
 
 ///
 
