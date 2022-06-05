@@ -247,7 +247,7 @@ fn f_add_five_cl2() -> impl Fn(i32) -> i32 {
 
 Ok. So far so good. But what is the use of constructing functions? See next section
 
-### Construct functions as a way to generalize computational alogrithms
+### Construct functions as a way to generalize computational alogrithms (you can skip it)
 
 Consider the Newton algorithm for calculating the square root of a number. 
 
@@ -263,6 +263,17 @@ Both algorithms have common in a computation. Starting from some guess it iterat
 How to generalize this computational shape?
 
 It is necessary to combine three parts: calculation of the first approximation, iterative calculation of subsequent approximations until the required accuracy of the calculations is reached.
+
+in pseudo code its show like this
+```
+for x calculate 
+i = 1 // iteration counter
+approximation = calc_first_approximation(x, i)
+while not_good_enough(approximation) {
+    increment i
+    approximation = next_approximation(approximation, x, i)
+}
+```
 
 ### Currying
 
