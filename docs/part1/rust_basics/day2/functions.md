@@ -409,6 +409,9 @@ fn ln(x: f32) -> f32 {
 ```
 
 ## Currying
+Currying is the technique of converting a function that takes multiple arguments into a sequence of functions that each takes a single argument. 
+
+For example, let's see add function with two arguments
 
 ```rust
 fn add(x: u32, y: u32) -> u32 {
@@ -485,7 +488,7 @@ This code use generics. Generics described in the next sections. But its readabl
 Use compose like below:
 ```rust
 let multiply_and_add_2 = compose(|x| x * 2, |x| x + 2);
-assert!(multiply_and_add_2(5) == 12);
+assert!(multiply_and_add_2(5) == 12); // (5 * 2) + 2
 ```
 
 # Summary
