@@ -249,7 +249,14 @@ Ok. So far so good. But what is the use of constructing functions? See next sect
 
 ### Construct functions as a way to generalize computational alogrithms
 
-///
+Consider the Newton algorithm for calculating the square root of a number. 
+
+Newton computation algorithm of number's X square root is a series of approximatons. As a first guess is X/2. And next guess can be compute as 
+G2 = (G1 + X/G1) / 2, where G1 is a previous guess value, G2 is a current guess. Guesses is making until the previous value and the current value differ by a specific amount, for example 0.01. This specific amount is computational difference between math defined and computed square root value of X.
+
+Next consider one of natural algorithm calculation algorithm.
+
+ln(x) = ln( (1 + y) / (1 - y) ) = 2y (1/1 + y^2^)
 
 ### Currying
 
