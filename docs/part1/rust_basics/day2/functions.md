@@ -188,8 +188,7 @@ let nu3 = underscore_unknown_chars(
 
 In this case closure has limitation. It can't capture extenal variables.This limitation can be overcome, but need using dyn trait calls. Now its outscope.
 
-## Functions and closures as return type. Currying.
-### Construct functions and return it.
+## Functions and closures as return type.
 Functions and closures can not only accept other function as argument, 
 but using functions and closures as return.
 
@@ -369,7 +368,7 @@ fn ln_guess(guess: f32, x: f32, i: i32) -> f32 {
 
 ---
 
-### Currying
+## Currying
 
 ```rust
 fn add(x: u32, y: u32) -> u32 {
