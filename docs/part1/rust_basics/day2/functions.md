@@ -341,7 +341,7 @@ fn ln_start(_x: f32) -> f32 {
 }
 ```
 
-And finally we should implement make_guess functions for square root and ln.
+And now we should implement make_guess functions for square root and ln.
 
 Square root implemenation is 
 ```rust
@@ -366,7 +366,47 @@ fn ln_guess(guess: f32, x: f32, i: i32) -> f32 {
 }
 ```
 
----
+Finally write in Rust function that implements computaion iterative approximation shape
+
+```rust
+fn iter(
+    x0: fn(f32) -> f32,
+    make_guess: fn(x1: f32, x2: f32, step: i32) -> f32,
+    is_good_enough: fn (f32, f32) -> bool
+) -> impl Fn(f32) -> f32 {
+    move |x| {
+        let mut i = 1;
+        let mut guess = make_guess(x0(x), x, i);
+        while !is_good_enough(guess, x) {
+            i += 1;
+            guess = make_guess(guess, x, i);    
+        }
+        guess
+    }
+} 
+```
+
+Now we can define sqrt and ln functions as
+
+```rust
+fn sqrt(x: f32) -> f32 {
+    let f = iter(
+        sqrt_start, 
+        sqrt_guess, 
+        sqrt_good_enough
+    );
+    f(x)
+}
+
+fn ln(x: f32) -> f32 {
+    let f = iter(
+        ln_start,
+        ln_guess,
+        ln_good_enough
+    );
+    f(x)
+}
+```
 
 ## Currying
 
