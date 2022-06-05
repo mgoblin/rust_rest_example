@@ -254,7 +254,7 @@ Consider the Newton algorithm for calculating the square root of a number.
 Newton computation algorithm of number's X square root is a series of approximatons. As a first guess is X/2. And next guess can be compute as 
 G2 = (G1 + X/G1) / 2, where G1 is a previous guess value, G2 is a current guess. Guesses is making until the previous value and the current value differ by a specific amount, for example 0.01. This specific amount is computational difference between math defined and computed square root value of X.
 
-Next consider one of natural algorithm calculation algorithm.
+Next consider one of natural logorithm calculation algorithm.
 
 ln(x) = ln( (1 + y) / (1 - y) ) = 2y * (1/1 + 1/3 y<sup>2</sup> + 1/5 y<sup>4</sup> + 1/7 y<sup>6</sup>  + ...)
 
@@ -262,7 +262,7 @@ Both algorithms have common in a computation. Starting from some guess it iterat
 
 How to generalize this computational shape?
 
-It is necessary to combine three parts: calculation of the first approximation, iterative calculation of subsequent approximations until the required accuracy of the calculations is reached.
+It is necessary to combine three parts: calculation of the first approximation, iterative calculation of subsequent approximations until the required accuracy of the calculations is reached. The result of combination is a function than calculate math.
 
 in pseudo code its show like this
 ```
@@ -280,7 +280,52 @@ where
 * guess is the current approximation value
 * x0 is function that calc first guess
 * good_enough is a boolean function that is true when required accuracy is reached.
- 
+
+In Rust that pseudo code is
+```rust
+fn iter(
+    x0: fn(f32) -> f32,
+    make_guess: fn(x1: f32, x2: f32, step: i32) -> f32,
+    is_good_enough: fn (f32, f32) -> bool
+) -> impl Fn(f32) -> f32 {
+    move |x| {
+        let mut i = 1;
+        let mut guess = make_guess(x0(x), x, i);
+        while !is_good_enough(guess, x) {
+            i += 1;
+            guess = make_guess(guess, x, i);    
+        }
+        guess
+    }
+} 
+```
+
+First we implements is_good_enough for square root and natural logorithm.
+
+Square root (sqrt) is_good_enough
+```rust
+fn sqrt_good_enough(guess: f32, x: f32) -> bool {
+    abs(x - guess * guess) <= 0.001
+}
+```
+where 
+* abs is number's absolute value (number value without a sign)
+* 0.01 - required accuracy
+
+```rust
+fn abs(x: f32) -> f32 {
+    if x >= 0.0 {x} else {-x}
+}
+```
+
+Natural logorithm (ln) root is_good_enough
+```rust
+fn ln_good_enough(guess: f32, x: f32) -> bool {
+    let e = 2.7182818284590452353602874713527f32;
+    abs(e.powf(guess) - x) <= 0.001
+}
+```
+
 
 ### Currying
 
