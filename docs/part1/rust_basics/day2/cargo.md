@@ -8,7 +8,7 @@
 Cargo is Rust’s build system and package manager.
 This is convenient tool for create and build rust applications.
 
-I highly recommend reading [Hello Cargo](https://doc.rust-lang.org/book/ch01-03-hello-cargo.html)
+I highly recommend reading [Hello Cargo chapter](https://doc.rust-lang.org/book/ch01-03-hello-cargo.html)
 
 ## Structure of Cargo project
 ```
@@ -43,9 +43,9 @@ edition = "2021"
 
 
 # Manage dependencies. Crates.
-Community-provided libraries placed in [crates.io](https://crates.io/). crates.io for Rust ecosystem is like maven central for Java. And Rust library named as crate.
+Community-provided libraries placed in [crates.io](https://crates.io/). crates.io for Rust ecosystem is like maven central for Java. And Rust library named as **crate**.
  
-To add a new library (dependency) for example json:
+Adding a new library (dependency) for example json:
 ```
 [dependencies]
 json = "0.12.4"
@@ -58,9 +58,10 @@ serde = { version = "1", features = ["derive"] }
 ``` 
 # Cargo (continued) 
 ## Cargo workspaces
-Some times you need split up code on multiple parts. At out case each folder should contains dayX_Y source code.
+Some times you need split up code on multiple subprojects. At our case each subproject folder should contains dayX_Y source files.
 
-Cargo have workspaces feature. Folder structure looks like below.
+Cargo have workspaces feature for this. 
+Workspace folder structure looks like below.
 ```
 root folder
   Cargo.toml <- list of workspaces
@@ -79,5 +80,6 @@ Cargo seems as simple pretty good build and dependecy management tool. Crates is
 Open questions
 * How to create my own library/crate and publish it? 
 * How to crates in http://crates.io supported and secure against malicious source code?
+* Does alternative crates sites exists?
 
 [<< Prev](../day2/functions.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
