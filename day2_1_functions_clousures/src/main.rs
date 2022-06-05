@@ -50,6 +50,29 @@ fn f_add_five() -> fn(i32) -> i32 {
     inner 
 }
 
+fn f_add_five2() -> impl Fn(i32) -> i32 {
+    fn inner(x: i32) -> i32 { x + 5 }
+    inner 
+}
+
+fn f_add_five_cl() -> impl Fn(i32) -> i32 {
+    |x| x + 5
+}
+
+fn f_add_five_cl2() -> impl Fn(i32) -> i32 {
+    let five = 5;
+    move |x| x + five
+}
+
+// functions cannot aquire its environment
+// commented code below does not compiled.
+// fn add_to(x: i32) -> fn(i32) -> i32 {
+//     fn adding(y: i32) -> i32 {
+//         x + y
+//     }
+//     adding
+// }
+
 fn iter(
     x0: fn(f32) -> f32,
     make_guess: fn(x1: f32, x2: f32, step: i32) -> f32,
@@ -196,7 +219,14 @@ fn main() {
 
     // funtion that returns function
     let add_five = f_add_five();
-    println!("{}", add_five(10));
+    let add_five2 = f_add_five2();
+    let add_five3 = f_add_five_cl();
+    let add_five4 = f_add_five_cl2();
+    println!("{}", add_five(10)); // print 15
+    println!("{}", add_five2(10)); // print 15
+    println!("{}", add_five3(10)); // print 15
+    println!("{}", add_five4(10)); // print 15
+
 
     println!("{}", sqrt(2.0));
     println!("{}", ln(8.0));
