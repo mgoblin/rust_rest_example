@@ -266,14 +266,21 @@ It is necessary to combine three parts: calculation of the first approximation, 
 
 in pseudo code its show like this
 ```
-for x calculate 
-i = 1 // iteration counter
-approximation = calc_first_approximation(x, i)
-while not_good_enough(approximation) {
+i = 1
+guess = make_guess(x0(x), x, i) // first guess
+while not good_enough(guess) {
     increment i
-    approximation = next_approximation(approximation, x, i)
+    guess = make_guess(guess, x, i)
 }
 ```
+where 
+* x is input value
+* i is iteration counter
+* make_guess is a approximation function
+* guess is the current approximation value
+* x0 is function that calc first guess
+* good_enough is a boolean function that is true when required accuracy is reached.
+ 
 
 ### Currying
 
