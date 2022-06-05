@@ -256,7 +256,7 @@ G2 = (G1 + X/G1) / 2, where G1 is a previous guess value, G2 is a current guess.
 
 Next consider one of natural algorithm calculation algorithm.
 
-ln(x) = ln( (1 + y) / (1 - y) ) = 2y (1/1 + y^2^)
+ln(x) = ln( (1 + y) / (1 - y) ) = 2y * (1/1 + y<sup>2</sup>)
 
 ### Currying
 
