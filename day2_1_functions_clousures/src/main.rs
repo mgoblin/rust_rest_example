@@ -229,7 +229,7 @@ fn main() {
 
 
     println!("{}", sqrt(2.0));
-    println!("{}", ln(8.0));
+    println!("{}", ln(10.0));
 
     // curring
     assert!(add(1, 2) == 3);

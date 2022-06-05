@@ -258,6 +258,8 @@ Next consider one of natural logorithm calculation algorithm.
 
 ln(x) = ln( (1 + y) / (1 - y) ) = 2y * (1/1 + 1/3 y<sup>2</sup> + 1/5 y<sup>4</sup> + 1/7 y<sup>6</sup>  + ...)
 
+where y = (x−1)/(x+1)
+
 Both algorithms have common in a computation. Starting from some guess it iterationally improve the result using previous tryies and optionally iteraion counter. Bunch of asymptotic alrorithms is based on the same idea and computation shape.
 
 How to generalize this computational shape?
@@ -281,7 +283,7 @@ where
 * x0 is function that calc first guess
 * good_enough is a boolean function that is true when required accuracy is reached.
 
-In Rust that pseudo code is
+In Rust that pseudo code can be write as
 ```rust
 fn iter(
     x0: fn(f32) -> f32,
@@ -325,7 +327,47 @@ fn ln_good_enough(guess: f32, x: f32) -> bool {
     abs(e.powf(guess) - x) <= 0.001
 }
 ```
+The next step is x0 function implementation.
 
+For the square root 
+```rust
+fn sqrt_start(x: f32) -> f32 {
+    x / 2.0
+}
+```
+And for the natural logorithm
+```rust
+fn ln_start(_x: f32) -> f32 {
+    0.0 
+}
+```
+
+And finally we should implement make_guess functions for square root and ln.
+
+Square root implemenation is 
+```rust
+fn sqrt_guess(guess: f32, x: f32, _i: i32) -> f32 {
+    (guess + x / guess) / 2.0
+}
+```
+
+Natural logorithm implementation is 
+```rust
+fn ln_y(x: f32) -> f32 {
+    (x - 1.0)/(x + 1.0)
+}
+
+fn ln_nth(n: i32) -> i32 {
+    2 * n - 1
+}
+
+fn ln_guess(guess: f32, x: f32, i: i32) -> f32 {
+    let n = ln_nth(i) as f32;
+    guess + 2.0 * (1.0 / n) * ln_y(x).powf(n)
+}
+```
+
+---
 
 ### Currying
 
