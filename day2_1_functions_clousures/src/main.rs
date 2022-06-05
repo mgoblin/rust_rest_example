@@ -45,6 +45,83 @@ fn underscore_unknown_chars(s: &str, uchar: char, predicate: fn(&char) -> bool) 
     result
 }
 
+fn f_add_five() -> fn(i32) -> i32 {
+    fn inner(x: i32) -> i32 { x + 5 }
+    inner 
+}
+
+fn iter(
+    x0: fn(f32) -> f32,
+    make_guess: fn(x1: f32, x2: f32, step: i32) -> f32,
+    is_good_enough: fn (f32, f32) -> bool
+) -> impl Fn(f32) -> f32 {
+    move |x| {
+        let mut i = 1;
+        let mut guess = make_guess(x0(x), x, i);
+        while !is_good_enough(guess, x) {
+            i += 1;
+            guess = make_guess(guess, x, i);    
+        }
+        guess
+    }
+} 
+
+fn abs(x: f32) -> f32 {
+    if x >= 0.0 {x} else {-x}
+}
+
+fn sqrt_good_enough(guess: f32, x: f32) -> bool {
+    abs(x - guess * guess) <= 0.001
+}
+
+fn ln_good_enough(guess: f32, x: f32) -> bool {
+    let e = 2.7182818284590452353602874713527f32;
+    abs(e.powf(guess) - x) < 0.001
+}
+
+fn sqrt_guess(guess: f32, x: f32, _i: i32) -> f32 {
+    (guess + x / guess) / 2.0
+}
+
+fn ln_y(x: f32) -> f32 {
+    (x - 1.0)/(x + 1.0)
+}
+
+fn ln_nth(n: i32) -> i32 {
+    2 * n - 1
+}
+
+fn ln_guess(guess: f32, x: f32, i: i32) -> f32 {
+    let n = ln_nth(i) as f32;
+    guess + 2.0 * (1.0 / n) * ln_y(x).powf(n)
+}
+
+fn sqrt_start(x: f32) -> f32 {
+    x / 2.0
+}
+
+fn ln_start(_x: f32) -> f32 {
+    0.0 
+}
+
+fn sqrt(x: f32) -> f32 {
+    let f = iter(
+        sqrt_start, 
+        sqrt_guess, 
+        sqrt_good_enough
+    );
+    f(x)
+}
+
+fn ln(x: f32) -> f32 {
+    let f = iter(
+        ln_start,
+        ln_guess,
+        ln_good_enough
+    );
+    f(x)
+}
+
 fn add(x: u32, y: u32) -> u32 {
     x + y
 }
@@ -62,22 +139,27 @@ fn compose<A, B, C, G, F>(f: F, g: G) -> impl Fn(A) -> C
 }
 
 fn main() {
+    // say_hello is a simple function
     println!("{}", say_hello("Mike"));
 
+    // say_hello2 use inner function
     println!("{}", say_hello2("John"));
     println!("{}", say_hello2("Alex"));
 
+    // function can be stored in variables
     let f = say_hello;
     println!("{}", f("John"));
 
+    // simple closure
     let f3 = |name: &str| {
         format!("Good day {}", name)
     };
     println!("{}", f3("Alex"));
 
+    // say_hello3 is function using inner closure
     println!("{}", say_hello3("Mary"));
 
-
+    // functions as argument
     let s = "Mike";
     let u = underscore_unknown_chars(
         s,
@@ -112,11 +194,20 @@ fn main() {
     );
     println!("{}", nu3);
 
+    // funtion that returns function
+    let add_five = f_add_five();
+    println!("{}", add_five(10));
+
+    println!("{}", sqrt(2.0));
+    println!("{}", ln(8.0));
+
+    // curring
     assert!(add(1, 2) == 3);
     assert!(add_curried(1)(2) == 3);
     let add_3_to = add_curried(3);
     assert!(add_3_to(5) == 8);
 
+    // function composition
     let multiply_and_add_2 = compose(|x| x * 2, |x| x + 2);
     assert!(multiply_and_add_2(5) == 12);
 }
