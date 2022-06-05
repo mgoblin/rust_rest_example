@@ -42,7 +42,7 @@ edition = "2021"
 [dependencies] - here you can place your code dependencies (other packages)
 
 
-## Manage dependencies
+# Manage dependencies. Crates.
 Community-provided libraries placed in [crates.io](https://crates.io/). crates.io for Rust ecosystem is like maven central for Java. And Rust library named as crate.
  
 To add a new library (dependency) for example json:
