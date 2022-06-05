@@ -189,6 +189,70 @@ let nu3 = underscore_unknown_chars(
 In this case closure has limitation. It can't capture extenal variables.This limitation can be overcome, but need using dyn trait calls. Now its outscope.
 
 ## Functions and closures as return type. Currying.
+### Construct functions and return it.
+Functions and closures can not only accept other function as argument, 
+but using functions and closures as return.
+
+Let's see example.
+```rust
+fn f_add_five() -> fn(i32) -> i32 {
+    fn inner(x: i32) -> i32 { x + 5 }
+    inner 
+}
+```
+In example above function f_add_five has no arruments and declare fn(i32) -> i32 as a return type. This means that f_add_five returns function with one i32 argument and i32 result.
+
+Implementation of f_add_five is quite simple. Function inner add 5 to its argument.
+
+Function in Rust have a trait type std::ops::Fn. And add_five can be declared as below.
+```rust
+fn f_add_five2() -> impl Fn(i32) -> i32 {
+    fn inner(x: i32) -> i32 { x + 5 }
+    inner 
+}
+```
+
+Now rewrite add_five body with closure.
+```rust
+fn f_add_five_cl() -> impl Fn(i32) -> i32 {
+    |x| x + 5
+}
+```
+Its implementation is more readable than previous. And has one useful feature: closure can capture values from scope.
+
+Let's try to capture variable in closure.
+
+```rust
+// Not compile
+fn f_add_five_cl2() -> impl Fn(i32) -> i32 {
+    let five = 5;
+    |x| x + five // here we try to use five
+}
+```
+Compile error occured.
+```
+|x| x + five
+   |     ^^^     ---- `five` is borrowed here
+   |     |
+   |     may outlive borrowed value `five`
+```
+We need say to compiler that five ownership moved from function to closure. Keyword move in closure declaration transfer ownership.
+
+```rust
+fn f_add_five_cl2() -> impl Fn(i32) -> i32 {
+    let five = 5;
+    move |x| x + five
+}
+```
+
+Ok. So far so good. But what is the use of constructing functions? See next section
+
+### Construct functions to generalize computational alogrithms
+
+///
+
+### Currying
+
 ```rust
 fn add(x: u32, y: u32) -> u32 {
     x + y
