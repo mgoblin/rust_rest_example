@@ -256,7 +256,13 @@ G2 = (G1 + X/G1) / 2, where G1 is a previous guess value, G2 is a current guess.
 
 Next consider one of natural algorithm calculation algorithm.
 
-ln(x) = ln( (1 + y) / (1 - y) ) = 2y * (1/1 + y<sup>2</sup>)
+ln(x) = ln( (1 + y) / (1 - y) ) = 2y * (1/1 + 1/3 y<sup>2</sup> + 1/5 y<sup>4</sup> + 1/7 y<sup>6</sup>  + ...)
+
+Both algorithms have common in a computation. Starting from some guess it iterationally improve the result using previous tryies and optionally iteraion counter. Bunch of asymptotic alrorithms is based on the same idea and computation shape.
+
+How to generalize this computational shape?
+
+It is necessary to combine three parts: calculation of the first approximation, iterative calculation of subsequent approximations until the required accuracy of the calculations is reached.
 
 ### Currying
 
