@@ -35,7 +35,9 @@ mod pets {
 ```
 
 # Module elements visibility
-By default all elements is private outside module and public inside module.
+By default all elements are private outside module and public inside module. 
+
+As an example, we develop pets module and two submodules animals and fish. 
 
 ```rust
 mod pets {
@@ -64,7 +66,7 @@ mod pets {
     }
 }
 ```
-Module pets declares enum Color, trait Greeting.
+Module pets declares enum Color and trait Greeting.
 
 Declare sub module animals as below
 
@@ -109,7 +111,7 @@ But trying use any pets or animals elements in main function are unsuccessful. I
 ## pub keyword
 [pub keyword detailed description](https://doc.rust-lang.org/reference/visibility-and-privacy.html)
 
-pub keyword enable make element visible outside module. Add pub to Color declaration
+pub keyword enables element visible outside module. Add pub to Color declaration
 ```rust
 mod pets {
   pub enum Color {
@@ -127,7 +129,7 @@ fn main() {
 
 
 # Using module elements. Keyword use.
-pub keyword changes visibility of module elements. But second part of the puzzle is declare elements usage. 
+pub keyword changes visibility of module elements. But second part of the puzzle is to declare elements usage. 
 [Use keyword details](https://doc.rust-lang.org/book/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html) 
 
 # Separation of code by files
@@ -236,7 +238,7 @@ fn main() {
 
 ```
 
-So far so good. Now start to implements animals module. I want to divide each animal to separate file. 
+So far so good. Let's start to implements animals module. I want to divide each animal to separate file. 
 ```
 ..
 pets
@@ -399,7 +401,11 @@ fn main() {
 }
 ```
 
-
 # Summary
+Rust modules are more complex than Java packages, but get flexible way to 
+* separate code by files
+* manage module elements visibility
+
+Java 9+ has similar modularity mechanism, but at my experience it is not widely used now.  
 ---
 [<< Prev](../day2/collections.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
