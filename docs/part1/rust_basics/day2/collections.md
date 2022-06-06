@@ -25,4 +25,4 @@ BinaryHeap - A priority queue implemented with a binary heap.
 Collections in Rust are pretty good designed and establish minimum required set of data containers.
 
 ---
-[<< Prev](../day2/cargo.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
+[<< Prev](../day2/cargo.md) &ensp; [Up](../index.md) &ensp; [Next >>](../day3/modules.md)  
