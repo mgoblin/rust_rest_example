@@ -82,4 +82,4 @@ Open questions
 * How to crates in http://crates.io supported and secure against malicious source code?
 * Does alternative crates sites exists?
 
-[<< Prev](../day2/functions.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
+[<< Prev](../day2/functions.md) &ensp; [Up](../index.md) &ensp; [Next >>](./collections.md)  
