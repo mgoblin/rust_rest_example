@@ -25,6 +25,7 @@ As Rust developer i can write simple single threaded programs. Source code decom
 
 * [Modules](./day3/modules.md)
 * [Generics](./day3/generics.md)
+* [Errors handling](./day3/errors.md)
 
 ---
 [<< Prev](../hello.md) &emsp; [Up](../hello.md) &emsp; [Next >>](./day1/numbers.md) 

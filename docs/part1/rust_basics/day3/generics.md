@@ -257,4 +257,4 @@ fn main() {
 ```
 
 ---
-[<< Prev](./modules.md) &ensp; [Up](../index.md) &ensp; [Next >>]()
+[<< Prev](./modules.md) &ensp; [Up](../index.md) &ensp; [Next >>](./errors.md)
