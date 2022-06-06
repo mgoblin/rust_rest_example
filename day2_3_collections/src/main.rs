@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 fn vector_init_demo() {
     // Create empty mutable vector via new method
     let v1 = Vec::<u32>::new();
@@ -14,11 +16,11 @@ fn vector_as_stack_demo() {
     v1.push(2);
     v1.push(3);
     println!("v1: {:?}", v1);
-    let x = v1.pop();
-    let y = v1.pop();
-    let z = v1.pop();
-    let o = v1.pop();
-    let len = v1.len();
+    let x = v1.pop(); // Some(3)
+    let y = v1.pop(); // Some(2)
+    let z = v1.pop(); // Some(1)
+    let o = v1.pop(); // None
+    let len = v1.len(); // 3
     println!("x={:?}, y={:?}, z={:?}, o={:?}, len={:?}", x, y, z, o, len);
 }
 
@@ -61,10 +63,33 @@ fn vector_transform_demo() {
     println!("multed = {:?}", multed);    
 }
 
+fn hashmap_demo() {
+    let mut users_map: HashMap<u32, String> = HashMap::new(); 
+    users_map.insert(1, "Mike".to_string());
+    users_map.insert(2, "Alex".to_string());
+    users_map.insert(3, "Mary".to_string());
+
+    println!("users_map {:?}", users_map);
+
+    let maybe_mike = users_map.get(&1);
+    println!("users_map.get(&1) = {:?}", &maybe_mike);
+
+    let maybe_user10 = users_map.get(&10);
+    println!("users_map.get(&10) = {:?}", &maybe_user10);
+
+    let filtered: HashMap<u32, String> = users_map.into_iter()
+        .filter(|(k, _v)| k > &1)
+        .map(|(k, v)| (k + 1, format!("!={}=!", v) ))
+        .collect();
+    println!("filtered key > 1 = {:?}", filtered);
+}
+
 fn main() {
     vector_init_demo();
     vector_as_stack_demo();
     vector_as_list_demo();
     vector_search_demo();
     vector_transform_demo();
+
+    hashmap_demo();
 }
