@@ -309,4 +309,4 @@ User with id 20 not found. Source: None
 Error handling approach in Rust is differs from Java and seems to like to functional Scala programming. Any struct can be used as error value, but its good to implement Error trait and source for error wrapping.
 
 ---
-[<< Prev](./generics.md) &ensp; [Up](../index.md) &ensp; [Next >>]()
+[<< Prev](./generics.md) &ensp; [Up](../index.md) &ensp; [Next >>](../../summary.md)
