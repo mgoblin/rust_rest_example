@@ -407,5 +407,6 @@ Rust modules are more complex than Java packages, but get flexible way to
 * manage module elements visibility
 
 Java 9+ has similar modularity mechanism, but at my experience it is not widely used now.  
+
 ---
 [<< Prev](../day2/collections.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
