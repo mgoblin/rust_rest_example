@@ -98,7 +98,7 @@ fn sqrt_good_enough(guess: f32, x: f32) -> bool {
 }
 
 fn ln_good_enough(guess: f32, x: f32) -> bool {
-    let e = 2.7182818284590452353602874713527f32;
+    let e = 2.718_281_7_f32;
     abs(e.powf(guess) - x) <= 0.001
 }
 
