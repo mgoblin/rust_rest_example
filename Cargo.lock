@@ -460,6 +460,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "day2_3_collections"
+version = "0.1.0"
+
+[[package]]
 name = "day3_1_modules_decl"
 version = "0.1.0"
 
