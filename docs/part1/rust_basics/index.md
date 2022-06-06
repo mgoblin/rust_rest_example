@@ -18,6 +18,7 @@ As Rust developer i can write simple single threaded programs. Source code is de
 
 * [Functions and closures](./day2/functions.md)
 * [Cargo and crates](./day2/cargo.md)
+* [Collections](./day2/collections.md)
 
 # Day 3.Modulariaztion and Abstraction
 As Rust developer i can write simple single threaded programs. Source code decomposed by files. I want to use abstraction and modularization.
