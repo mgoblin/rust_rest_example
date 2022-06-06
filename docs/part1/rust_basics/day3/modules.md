@@ -1,11 +1,9 @@
 # Modules
-
 {:no_toc}
 
 * TOC
 {:toc}
 
- # Modules
 
 ## Why?
 As the application's source code grows, developers need a way to divide it into logical blocks. Java (and Scala) has package and import keywords for splitting code. In Java packages hierarchy tied to files and folders. 
@@ -409,4 +407,4 @@ Rust modules are more complex than Java packages, but get flexible way to
 Java 9+ has similar modularity mechanism, but at my experience it is not widely used now.  
 
 ---
-[<< Prev](../day2/collections.md) &ensp; [Up](../index.md) &ensp; [Next >>]()  
+[<< Prev](../day2/collections.md) &ensp; [Up](../index.md) &ensp; [Next >>](./generics.md)  

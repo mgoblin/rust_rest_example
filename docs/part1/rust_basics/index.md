@@ -24,6 +24,7 @@ As Rust developer i can write simple single threaded programs. Source code is de
 As Rust developer i can write simple single threaded programs. Source code decomposed by files. I want to use abstraction and modularization.
 
 * [Modules](./day3/modules.md)
+* [Generics](./day3/generics.md)
 
 ---
 [<< Prev](../hello.md) &emsp; [Up](../hello.md) &emsp; [Next >>](./day1/numbers.md) 
