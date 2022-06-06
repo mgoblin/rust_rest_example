@@ -24,7 +24,7 @@ mod pets {
 
 Modules can be nested.
 
-```rust {
+```rust 
 mod pets {
   mod animals {
   }
