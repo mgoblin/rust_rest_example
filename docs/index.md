@@ -33,7 +33,7 @@ When evaluate a new technology I prefer incremental approach:
 #### [Grasp the language basics](part1/rust_basics/index.md). 
 Structure of application, data types,decomposition, reuse, and dealing with complexity. [Rust language basics in three days](./part1/rust_basics/index.md) 
 
-#### Summary of Part 1
+#### Summary of Part1
 [Summary](./part1/summary.md)
 ### Part 2. REST journey
 
