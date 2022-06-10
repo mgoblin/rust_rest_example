@@ -66,4 +66,4 @@ Rust made an impression, not simple, but expressive language.
 * Testing
 
 ---
-[<< Prev](./rust_basics/day3/errors.md) &ensp; [Up](../index.md) &ensp; [Next >>]()
+[<< Prev](./rust_basics/day3/errors.md) &ensp; [Up](../index.md) &ensp; [Next >>](../part2/index.md)
