@@ -35,7 +35,10 @@ Structure of application, data types,decomposition, reuse, and dealing with comp
 
 #### Summary of Part1
 [Summary](./part1/summary.md)
+
 ### Part 2. REST journey
+
+[Part2](./part2/index.md)
 
 3. Define basic functional requirements.
 4. Choose frameworks and libraries
