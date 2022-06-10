@@ -42,7 +42,7 @@ Rust made an impression, not simple, but expressive language.
 * Ownership and borrowing
 * Derive implementation basics
 
-## Program structure
+## Application structure
 * Use crates
 * Modules
 * private and public access
@@ -52,7 +52,7 @@ Rust made an impression, not simple, but expressive language.
 * Macroses
 * Traits (and traits inheritance)
 * Lifetimes
-* Smart pointers and data on heap (Box and etc)
+* Smart pointers and data on the heap (Box and etc)
 * Annotations #[]
 * Iterators
 * Concurrency and async
@@ -60,7 +60,7 @@ Rust made an impression, not simple, but expressive language.
 * Popular and useful crates
 * unsafe code blocks
 
-## Tooling
+# Unexplored tools
 * Debuger
 * Profiler
 * Testing
