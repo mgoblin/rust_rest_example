@@ -28,4 +28,4 @@ As Rust developer i can write simple single threaded programs. Source code decom
 * [Errors handling](./day3/errors.md)
 
 ---
-[<< Prev](../hello.md) &emsp; [Up](../hello.md) &emsp; [Next >>](./day1/numbers.md) 
+[<< Prev](../index.md) &emsp; [Up](../index.md) &emsp; [Next >>](./day1/numbers.md) 

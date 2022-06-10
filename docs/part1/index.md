@@ -27,6 +27,6 @@ fn main() {
 ``` 
 
 ---
-<< Prev &emsp; [Up](../index.md) &emsp; [Next >>](./rust_basics/index.md)
+<< [Prev](../index.md) &emsp; [Up](../index.md) &emsp; [Next >>](./rust_basics/index.md)
 
  

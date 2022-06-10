@@ -29,7 +29,7 @@ When evaluate a new technology I prefer incremental approach:
 
 ### Part1. From zero to Rust junior
 
-#### [Setup development environment: compiler, IDE, DB and so on. Run "hello world"](part1/hello.md)
+#### [Setup development environment: compiler, IDE, DB and so on. Run "hello world"](part1/index.md)
 #### [Grasp the language basics](part1/rust_basics/index.md). 
 Structure of application, data types,decomposition, reuse, and dealing with complexity. [Rust language basics in three days](./part1/rust_basics/index.md) 
 
@@ -42,5 +42,5 @@ Structure of application, data types,decomposition, reuse, and dealing with comp
 5. Start to implements application as a series of steps from "it seems to work" to "works fine in local environment" level 
 
 ---
-<< Prev &emsp; Up &emsp; [Next >>](./part1/hello.md)
+<< Prev &emsp; Up &emsp; [Next >>](./part1/index.md)
 
