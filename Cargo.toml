@@ -11,6 +11,7 @@ members = [
     "day3_2_generics",
     "day3_3_errors",
 
-    "step1"
+    "step1", 
+    "step2"
     #"step_final"
 ]

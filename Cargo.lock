@@ -1011,6 +1011,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 
 [[package]]
+name = "rest_http_json"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "fast_log",
+ "log",
+ "rbson",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "rest_http_routes"
 version = "0.1.0"
 dependencies = [
