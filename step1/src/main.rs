@@ -1,10 +1,9 @@
 use actix_web::{App, HttpServer};
 
-mod model;
 mod handlers;
 
 
-#[tokio::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {

@@ -5,7 +5,7 @@ mod handlers;
 mod http_utils;
 
 
-#[tokio::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
