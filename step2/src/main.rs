@@ -2,6 +2,7 @@ use actix_web::{App, HttpServer};
 
 mod model;
 mod handlers;
+mod http_utils;
 
 
 #[tokio::main]

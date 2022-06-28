@@ -1,4 +1,6 @@
-use actix_web::{Responder, web, get, post, delete};
+use actix_web::{Responder, web, get, post, delete, HttpResponse, http::{StatusCode, header::ContentType}};
+
+use crate::{model::User, http_utils};
 
 #[get("/users")]
 pub async fn list() -> impl Responder {
@@ -7,7 +9,15 @@ pub async fn list() -> impl Responder {
 
 #[get("users/{id}")]
 pub async fn get_user_by_id(uid: web::Path<u64>) -> impl Responder {
-    format!("GET /users/{uid} called.\n")
+    let user_id: u64 = uid.into_inner();
+    if user_id < 100 {
+        let user = User{id: user_id, name: String::from("user")};
+        http_utils::user_as_json(&user)
+    } else {
+        HttpResponse::build(StatusCode::NOT_FOUND)
+            .content_type(ContentType::json())
+            .finish()
+    }
 }
 
 #[post("users")]
