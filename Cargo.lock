@@ -1028,11 +1028,6 @@ name = "rest_http_routes"
 version = "0.1.0"
 dependencies = [
  "actix-web",
- "fast_log",
- "log",
- "rbson",
- "serde",
- "serde_json",
  "tokio",
 ]
 
