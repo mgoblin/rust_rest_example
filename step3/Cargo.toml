@@ -1,0 +1,18 @@
+[package]
+name = "rest_logging_and_configs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+# json libs
+serde = { version = "1", features = ["derive"] }
+rbson = "2.0"
+serde_json = "1.0.79"
+
+#async runtime lib
+#tokio = { version = "1.12", features = ["full"] }
+
+actix-web = "4.1.0"
