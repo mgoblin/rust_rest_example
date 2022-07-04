@@ -1,4 +1,4 @@
-use actix_web::{Responder, web::{self, Data}, get, post, delete};
+use actix_web::{Responder, web::{self, Data}, get, post, delete, HttpResponse};
 
 use crate::{http_utils, services::{UserInMemoryDAO, UserDAO}, model::User};
 
@@ -17,19 +17,30 @@ pub async fn get_user_by_id(uid: web::Path<u64>, dao: Data<UserInMemoryDAO>) -> 
 
 #[post("users")]
 pub async fn create_user(body_bytes: web::Bytes, dao: Data<UserInMemoryDAO>) -> impl Responder {
-    let body = String::from_utf8(body_bytes.to_vec()).unwrap();
-    match dao.create(&body) {
-        Ok(u) => http_utils::user_as_json(&u),
-        Err(e) => http_utils::user_not_modified(&e)
-    } 
+    let try_body = String::from_utf8(body_bytes.to_vec());
+    match try_body {
+        Ok(body) => {
+            match dao.create(&body) {
+                Ok(u) => http_utils::user_as_json(&u),
+                Err(e) => http_utils::user_not_modified(&e)
+            }
+        }, 
+        Err(err) => HttpResponse::BadRequest().body(err.to_string())
+    }
 }
 
 #[post("users/{id}")]
 pub async fn update_user(uid: web::Path<u64>, body_bytes: web::Bytes, dao: Data<UserInMemoryDAO>) -> impl Responder {
-    let user = User {id: uid.into_inner(), name: String::from_utf8(body_bytes.to_vec()).unwrap()};
-    match dao.update(&user) {
-        Ok(u) => http_utils::user_as_json(&u),
-        Err(e) => http_utils::user_not_modified(&e)
+    let try_body = String::from_utf8(body_bytes.to_vec());
+    match try_body {
+        Ok(body) => {
+            let user = User {id: uid.into_inner(), name: body};
+            match dao.update(&user) {
+                Ok(u) => http_utils::user_as_json(&u),
+                Err(e) => http_utils::user_not_modified(&e)
+            }
+        },
+        Err(err) => HttpResponse::BadRequest().body(err.to_string())
     }
 }
 
