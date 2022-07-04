@@ -8,7 +8,7 @@ pub trait UserDAO {
     fn find_by_id(&self, id: u64) -> Option<User>;
     fn create(&self, name: &str) -> Result<User, UserDAOError>;
     fn update(&self, user: &User) -> Result<User, UserDAOError>;
-    // fn delete_by_id(&self, id: u64) -> Option<User>;
+    fn delete(&self, id: u64) -> Result<User, UserDAOError>;
 }
 
 pub struct UserInMemoryDAO {
@@ -83,6 +83,21 @@ impl UserDAO for UserInMemoryDAO {
             Some(idx) => {
                 users.remove(idx);
                 users.push(user.clone());
+                Ok(user.clone())
+            },
+            None => Err(UserDAOError {message: String::from("User not found")})
+        }
+    }
+
+    fn delete(&self, id: u64) -> Result<User, UserDAOError> {
+        let mut guard = self.users.lock().unwrap();
+        let users = &mut *guard;
+
+        let existing_user_idx = users.into_iter().position(|u| u.id == id);
+
+        match existing_user_idx {
+            Some(idx) => {
+                let user = users.remove(idx);
                 Ok(user.clone())
             },
             None => Err(UserDAOError {message: String::from("User not found")})
