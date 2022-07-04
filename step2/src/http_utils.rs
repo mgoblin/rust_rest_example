@@ -20,9 +20,13 @@ pub fn user_not_found() -> HttpResponse {
 }
 
 pub fn user_not_modified(e: &UserDAOError) -> HttpResponse {
-  let err_str = serde_json::to_string_pretty(e).unwrap();
+  let err_str = serde_json::to_string_pretty(e);
 
-  HttpResponse::build(StatusCode::BAD_REQUEST)
-    .content_type(ContentType::json())
-    .body(err_str)
+  match err_str {
+    Ok(s) => 
+      HttpResponse::build(StatusCode::BAD_REQUEST)
+        .content_type(ContentType::json())
+        .body(s),
+    Err(err) => HttpResponse::from_error(err)                  
+  }
 }
