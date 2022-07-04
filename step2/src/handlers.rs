@@ -1,29 +1,28 @@
-use actix_web::{Responder, web, get, post, delete, HttpResponse, http::{StatusCode, header::ContentType}};
+use actix_web::{Responder, web::{self, Data}, get, post, delete};
 
-use crate::{model::User, http_utils};
+use crate::{http_utils, services::{UserInMemoryDAO, UserDAO}};
 
 #[get("/users")]
-pub async fn list() -> impl Responder {
-    "GET /users called.\n"
+pub async fn list(dao: Data<UserInMemoryDAO>) -> impl Responder {
+    web::Json(dao.list())
 }
 
 #[get("users/{id}")]
-pub async fn get_user_by_id(uid: web::Path<u64>) -> impl Responder {
-    let user_id: u64 = uid.into_inner();
-    if user_id < 100 {
-        let user = User{id: user_id, name: String::from("user")};
-        http_utils::user_as_json(&user)
-    } else {
-        HttpResponse::build(StatusCode::NOT_FOUND)
-            .content_type(ContentType::json())
-            .finish()
+pub async fn get_user_by_id(uid: web::Path<u64>, dao: Data<UserInMemoryDAO>) -> impl Responder {
+    match dao.find_by_id(uid.into_inner()) {
+        Some(u) => http_utils::user_as_json(&u),
+        None => http_utils::user_not_found()
     }
 }
 
 #[post("users")]
-pub async fn create_user(body_bytes: web::Bytes) -> impl Responder {
+pub async fn create_user(body_bytes: web::Bytes, dao: Data<UserInMemoryDAO>) -> impl Responder {
     let body = String::from_utf8(body_bytes.to_vec()).unwrap();
-    format!("POST /users called.\nHttp body: {body}\n")
+    let try_user = dao.create(&body);
+    match try_user {
+        Ok(u) => http_utils::user_as_json(&u),
+        Err(e) => http_utils::user_not_modified(&e)
+    } 
 }
 
 #[post("users/{id}")]
