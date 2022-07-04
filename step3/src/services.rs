@@ -1,5 +1,6 @@
 use std::sync::Mutex;
 
+use crate::configs::Configuration;
 use crate::model::User;
 use crate::model::UserDAOError;
 
@@ -16,12 +17,22 @@ pub struct UserInMemoryDAO {
 }
 
 impl UserInMemoryDAO {
-    pub fn new() -> UserInMemoryDAO {
-        let list = vec![
-            User{id: 1, name: String::from("user 1")},
-            User{id: 2, name: String::from("user 2")},
-        ];
-        UserInMemoryDAO{ users: Mutex::new(list)} 
+    pub fn new(cfg: &Configuration) -> UserInMemoryDAO {
+        
+        let list = &mut vec![];
+        
+        if let Some(store) = &cfg.store {
+            if let Some(inmemory) = &store.inmemory {
+                for i in 1 .. inmemory.users + 1 {
+                    let user = User {
+                        id: u64::from(i), 
+                        name: String::from(format!("user {}", i))
+                    };
+                    list.push(user);
+                }
+            }
+        }
+        UserInMemoryDAO{ users: Mutex::new(list.clone())} 
     }
 
     pub fn validate_name(name: &str) -> Result<&str, UserDAOError> {

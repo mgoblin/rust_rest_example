@@ -1,16 +1,23 @@
 use actix_web::{App, HttpServer, web::Data};
+use configs::Configuration;
 use services::UserInMemoryDAO;
+
 
 mod model;
 mod handlers;
 mod http_utils;
 mod services;
+mod configs;
 
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let user_dao = UserInMemoryDAO::new();
+
+    let cfg = &Configuration::load().unwrap();    
+            
+    let user_dao = UserInMemoryDAO::new(cfg);
     let user_data = Data::new(user_dao); 
+
     HttpServer::new(move || {
         App::new()
             .app_data(user_data.clone())
@@ -20,7 +27,7 @@ async fn main() -> std::io::Result<()> {
             .service(handlers::update_user)
             .service(handlers::delete_user)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind((cfg.server.host.clone().as_str(), cfg.server.port))?
     .run()
     .await
 }
