@@ -1,6 +1,6 @@
 use actix_web::{Responder, web::{self, Data}, get, post, delete};
 
-use crate::{http_utils, services::{UserInMemoryDAO, UserDAO}};
+use crate::{http_utils, services::{UserInMemoryDAO, UserDAO}, model::User};
 
 #[get("/users")]
 pub async fn list(dao: Data<UserInMemoryDAO>) -> impl Responder {
@@ -18,17 +18,19 @@ pub async fn get_user_by_id(uid: web::Path<u64>, dao: Data<UserInMemoryDAO>) -> 
 #[post("users")]
 pub async fn create_user(body_bytes: web::Bytes, dao: Data<UserInMemoryDAO>) -> impl Responder {
     let body = String::from_utf8(body_bytes.to_vec()).unwrap();
-    let try_user = dao.create(&body);
-    match try_user {
+    match dao.create(&body) {
         Ok(u) => http_utils::user_as_json(&u),
         Err(e) => http_utils::user_not_modified(&e)
     } 
 }
 
 #[post("users/{id}")]
-pub async fn update_user(uid: web::Path<u64>, body_bytes: web::Bytes) -> impl Responder {
-    let body = String::from_utf8(body_bytes.to_vec()).unwrap();
-    format!("POST /users/{uid} called.\nHttp body: {body}\n")
+pub async fn update_user(uid: web::Path<u64>, body_bytes: web::Bytes, dao: Data<UserInMemoryDAO>) -> impl Responder {
+    let user = User {id: uid.into_inner(), name: String::from_utf8(body_bytes.to_vec()).unwrap()};
+    match dao.update(&user) {
+        Ok(u) => http_utils::user_as_json(&u),
+        Err(e) => http_utils::user_not_modified(&e)
+    }
 }
 
 #[delete("/users/{id}")]
