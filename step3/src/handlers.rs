@@ -46,7 +46,7 @@ pub async fn update_user(uid: web::Path<u64>, body_bytes: web::Bytes, dao: Data<
 
 #[delete("/users/{id}")]
 pub async fn delete_user(uid: web::Path<u64>, dao: Data<UserInMemoryDAO>) -> impl Responder {
-    match dao.delete(uid.into_inner()) {
+    match dao.delete_by_id(uid.into_inner()) {
         Ok(u) => http_utils::user_as_json(&u),
         Err(_) => http_utils::user_not_found()    
     }
