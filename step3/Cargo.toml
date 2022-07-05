@@ -1,5 +1,5 @@
 [package]
-name = "rest_logging_and_configs"
+name = "rest_configs_and_testing"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,13 +8,10 @@ edition = "2021"
 [dependencies]
 
 # json libs
-serde = { version = "1", features = ["derive"] }
-rbson = "2.0"
+serde = {version = "1.0.138", features = ["derive"]}
 serde_json = "1.0.79"
 
-#async runtime lib
-#tokio = { version = "1.12", features = ["full"] }
-
+# web framework
 actix-web = "4.1.0"
 
 # config
