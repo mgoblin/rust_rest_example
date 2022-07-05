@@ -1,5 +1,5 @@
 use actix_web::{App, HttpServer, web::Data};
-use configs::Configuration;
+use configs::{Configuration, Store};
 use services::UserInMemoryDAO;
 
 
@@ -14,8 +14,10 @@ mod configs;
 async fn main() -> std::io::Result<()> {
 
     let cfg = &Configuration::load_from_file("application.yaml").unwrap();    
-            
-    let user_dao = UserInMemoryDAO::new(cfg);
+    let store = cfg.store.as_ref().unwrap_or(&Store {inmemory: None});
+    let inmemory = store.inmemory.as_ref();
+
+    let user_dao = UserInMemoryDAO::new(inmemory);
     let user_data = Data::new(user_dao); 
 
     HttpServer::new(move || {
