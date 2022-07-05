@@ -1,5 +1,5 @@
 [package]
-name = "rest_configs_and_testing"
+name = "rest_configs_and_unit_testing"
 version = "0.1.0"
 edition = "2021"
 

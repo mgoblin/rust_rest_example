@@ -13,7 +13,7 @@ mod configs;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
-    let cfg = &Configuration::load().unwrap();    
+    let cfg = &Configuration::load_from_file("application.yaml").unwrap();    
             
     let user_dao = UserInMemoryDAO::new(cfg);
     let user_data = Data::new(user_dao); 
