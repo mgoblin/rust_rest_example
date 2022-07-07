@@ -41,7 +41,7 @@ mod tests {
     use super::Configuration;
 
     #[test]
-    fn load_full_config_from_existing_file() {
+    fn test_load_full_config_from_existing_file() {
         let cfg = Configuration::load_from_file("tests/application.yaml").unwrap();
         assert_eq!(
             Configuration {
@@ -60,19 +60,19 @@ mod tests {
     }
 
     #[test]
-    fn load_from_unexisted_file() {
+    fn test_load_from_unexisted_file() {
         let result = Configuration::load_from_file("not_existed.yaml").unwrap_err();
         assert_eq!("configuration file \"not_existed.yaml\" not found", result.to_string());
     }
 
     #[test]
-    fn load_not_yaml() {
+    fn test_load_not_yaml() {
         let result = Configuration::load_from_file("tests/corrupted.yaml").unwrap_err();
         assert_eq!("invalid type: unit value, expected struct ServerConfig", result.to_string());
     }
 
     #[test]
-    fn load_empty_config_file() {
+    fn test_load_empty_config_file() {
         let cfg = Configuration::load_from_file("tests/empty.yaml").unwrap();
         assert_eq!(
             Configuration {
@@ -87,13 +87,13 @@ mod tests {
     }
 
     #[test]
-    fn load_server_with_empty_body() {
+    fn test_load_server_with_empty_body() {
         let result = Configuration::load_from_file("tests/server_empty.yaml").unwrap_err();
         assert_eq!("invalid type: unit value, expected struct ServerConfig", result.to_string());
     }
 
     #[test]
-    fn load_default_port() {
+    fn test_load_default_port() {
         let cfg = Configuration::load_from_file("tests/default_port.yaml").unwrap();
         assert_eq!(
             Configuration {
@@ -108,7 +108,7 @@ mod tests {
     }
 
     #[test]
-    fn load_default_host() {
+    fn test_load_default_host() {
         let cfg = Configuration::load_from_file("tests/default_host.yaml").unwrap();
         assert_eq!(
             Configuration {
@@ -123,7 +123,7 @@ mod tests {
     }
 
     #[test]
-    fn load_server_full() {
+    fn test_load_server_full() {
         let cfg = Configuration::load_from_file("tests/server_full.yaml").unwrap();
         assert_eq!(
             Configuration {
@@ -138,7 +138,7 @@ mod tests {
     }
 
     #[test]
-    fn invalid_port_format() {
+    fn test_invalid_port_format() {
         let result = Configuration::load_from_file("tests/server_empty.yaml").unwrap_err();
         assert_eq!("invalid type: unit value, expected struct ServerConfig", result.to_string());
     }

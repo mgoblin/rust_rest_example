@@ -32,7 +32,7 @@ mod tests {
   }
 
   #[test]
-  fn serizalize_users_list() {
+  fn test_serizalize_users_list() {
     let users = vec![
       User{id: 1, name: "user 1".to_string()},
       User{id: 2, name: "user 2".to_string()},
