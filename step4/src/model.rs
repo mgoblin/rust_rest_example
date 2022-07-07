@@ -25,6 +25,7 @@ pub struct UserFields {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserDAOError {
+  #[serde(rename(serialize = "error", deserialize = "error"))]
   pub message: String,
 }
 
