@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use validator::Validate;
 use std::{error::Error, fmt::Display};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -6,13 +7,15 @@ pub struct User {
   pub id: u64,
   
   #[serde(flatten)]
-  pub user_name: UserName,
+  pub fields: UserFields,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct UserName {
-  pub name: String,
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+pub struct UserFields {
+  #[validate(length(min = 4, max = 255))]
+  pub name: String
 }
+
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserDAOError {
@@ -29,7 +32,7 @@ impl Error for UserDAOError {}
 
 #[cfg(test)]
 mod tests {
-    use crate::model::UserName;
+    use crate::model::UserFields;
 
     use super::User;
 
@@ -38,7 +41,7 @@ mod tests {
   fn test_serialize_user() {
     let json = serde_json::to_string(&User {
       id: 1, 
-      user_name: UserName { name: "user".to_string()}
+      fields: UserFields { name: "user".to_string()}
     }).unwrap();
     assert_eq!("{\"id\":1,\"name\":\"user\"}", json);
   }
@@ -46,8 +49,8 @@ mod tests {
   #[test]
   fn test_serizalize_users_list() {
     let users = vec![
-      User{id: 1, user_name: UserName { name: "user 1".to_string()}},
-      User{id: 2, user_name: UserName { name: "user 2".to_string()}},
+      User{id: 1, fields: UserFields { name: "user 1".to_string()}},
+      User{id: 2, fields: UserFields { name: "user 2".to_string()}},
     ];
 
     let json = serde_json::to_string(&users).unwrap();
@@ -60,7 +63,7 @@ mod tests {
     let user = serde_json::from_str::<User>(json).unwrap();
     let expected_user = User {
       id: 1, 
-      user_name: UserName { name: "user".to_string()}};
+      fields: UserFields { name: "user".to_string()}};
 
     assert_eq!(expected_user, user);
   }
@@ -70,8 +73,8 @@ mod tests {
     let json ="[{\"id\":1,\"name\":\"user 1\"},{\"id\":2,\"name\":\"user 2\"}]";
     let users = serde_json::from_str::<Vec<User>>(json).unwrap();
     assert_eq!(vec![
-        User {id: 1, user_name: UserName { name: "user 1".to_string() }},
-        User {id: 2, user_name: UserName { name: "user 2".to_string() }},
+        User {id: 1, fields: UserFields { name: "user 1".to_string() }},
+        User {id: 2, fields: UserFields { name: "user 2".to_string() }},
       ], 
       users
     );

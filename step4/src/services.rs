@@ -3,12 +3,12 @@ use std::sync::Mutex;
 use crate::configs::InMemory;
 use crate::model::User;
 use crate::model::UserDAOError;
-use crate::model::UserName;
+use crate::model::UserFields;
 
 pub trait UserDAO {
     fn list(&self) -> Vec<User>;
     fn find_by_id(&self, id: u64) -> Option<User>;
-    fn create(&self, user_name: &UserName) -> Result<User, UserDAOError>;
+    fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
     fn update(&self, user: &User) -> Result<User, UserDAOError>;
     fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
 }
@@ -26,7 +26,7 @@ impl UserInMemoryDAO {
             for i in 1 .. inmemory.users + 1 {
                 let user = User {
                     id: u64::from(i), 
-                    user_name: UserName { name: String::from(format!("user {}", i))}
+                    fields: UserFields { name: String::from(format!("user {}", i))}
                 };
                 list.push(user);
             }
@@ -57,14 +57,14 @@ impl UserDAO for UserInMemoryDAO {
         users.into_iter().find(|u| u.id == id).cloned()
     }
 
-    fn create(&self, user_name: &UserName) -> Result<User, UserDAOError> {
+    fn create(&self, fields: &UserFields) -> Result<User, UserDAOError> {
         
-        UserInMemoryDAO::validate_name(&user_name.name)?;
+        UserInMemoryDAO::validate_name(&fields.name)?;
 
         let mut guard = self.users.lock().unwrap();
         let users = &mut *guard;
 
-        let user_exists = users.into_iter().any(|u| u.user_name == *user_name);
+        let user_exists = users.into_iter().any(|u| u.fields == *fields);
 
         if user_exists {
             Err(UserDAOError{ message: String::from("User exists")})
@@ -72,7 +72,7 @@ impl UserDAO for UserInMemoryDAO {
             let max_id = users.into_iter().map(|u| u.id).max();
             let uid = max_id.unwrap_or(0) + 1;
 
-            let user = User {id: uid, user_name: user_name.clone() };
+            let user = User {id: uid, fields: fields.clone() };
 
             users.push(user.clone());
 
@@ -82,7 +82,7 @@ impl UserDAO for UserInMemoryDAO {
 
     fn update(&self, user: &User) -> Result<User, UserDAOError> {
         
-        UserInMemoryDAO::validate_name(&user.user_name.name)?;
+        UserInMemoryDAO::validate_name(&user.fields.name)?;
 
         let mut guard = self.users.lock().unwrap();
         let users = &mut *guard;
@@ -117,7 +117,7 @@ impl UserDAO for UserInMemoryDAO {
 
 #[cfg(test)]
 mod tests {
-    use crate::{configs::InMemory, model::{User, UserDAOError, UserName}};
+    use crate::{configs::InMemory, model::{User, UserDAOError, UserFields}};
 
     use super::{UserInMemoryDAO, UserDAO};
 
@@ -132,14 +132,14 @@ mod tests {
     fn test_non_empty_list() {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 1}));
         let users = dao.list();
-        assert_eq!(users, vec![User { id: 1, user_name: UserName { name: "user 1".to_string() }}]);
+        assert_eq!(users, vec![User { id: 1, fields: UserFields { name: "user 1".to_string() }}]);
     }
 
     #[test]
     fn test_find_by_id_ok() {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 2}));
         let user2 = dao.find_by_id(2);
-        let expected = User{ id: 2, user_name: UserName { name: "user 2".to_string() }};
+        let expected = User{ id: 2, fields: UserFields { name: "user 2".to_string() }};
         assert_eq!(Some(expected), user2);  
     }
 
@@ -160,8 +160,8 @@ mod tests {
     #[test]
     fn test_create_on_empty_list() {
         let dao = UserInMemoryDAO::new(None);
-        let user = dao.create(&UserName { name: "user".to_string() }).unwrap();
-        let expected = User { id: 1, user_name: UserName{ name: "user".to_string() }};
+        let user = dao.create(&UserFields { name: "user".to_string() }).unwrap();
+        let expected = User { id: 1, fields: UserFields{ name: "user".to_string() }};
 
         assert_eq!(expected, user);
 
@@ -175,21 +175,21 @@ mod tests {
     #[test]
     fn test_create_with_existing_name() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
-        let result = dao.create(&UserName { name: "user 1".to_string() });
+        let result = dao.create(&UserFields { name: "user 1".to_string() });
         assert_eq!(Err(UserDAOError {message: "User exists".to_string()}), result);
     }
 
     #[test]
     fn test_create_with_empty_name() {
         let dao = UserInMemoryDAO::new(None);
-        let result = dao.create(&UserName { name: "".to_string() });
+        let result = dao.create(&UserFields { name: "".to_string() });
         assert_eq!(Err(UserDAOError {message: "Empty name".to_string()}), result);
     }
 
     #[test]
     fn test_update_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 2}));
-        let updated_user = User {id: 2, user_name: UserName { name: "update user".to_string() } };
+        let updated_user = User {id: 2, fields: UserFields { name: "update user".to_string() } };
         let user = dao.update(&updated_user).unwrap();
         assert_eq!(updated_user, user);
 
@@ -197,18 +197,18 @@ mod tests {
         assert_eq!(updated_user, finded_user2);
 
         let finded_user1 = dao.find_by_id(1).unwrap();
-        assert_eq!(User {id: 1, user_name: UserName { name: "user 1".to_string() }}, finded_user1);
+        assert_eq!(User {id: 1, fields: UserFields { name: "user 1".to_string() }}, finded_user1);
     }
 
     #[test]
     fn test_update_non_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
-        let non_existed_user = User {id: 2, user_name: UserName { name: "test".to_string() }};
+        let non_existed_user = User {id: 2, fields: UserFields { name: "test".to_string() }};
         let result = dao.update(&non_existed_user).unwrap_err();
 
         assert_eq!(UserDAOError { message: "User not found".to_string() }, result);
 
-        let exists = dao.list().contains(&User {id: 1, user_name: UserName { name: "user 1".to_string() }});
+        let exists = dao.list().contains(&User {id: 1, fields: UserFields { name: "user 1".to_string() }});
         assert_eq!(true, exists);
     }
 
@@ -217,7 +217,7 @@ mod tests {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
         assert_eq!(false, dao.list().is_empty());
 
-        let expected_user = User {id: 1, user_name: UserName { name: "user 1".to_string() }};
+        let expected_user = User {id: 1, fields: UserFields { name: "user 1".to_string() }};
         let deleted_user = dao.delete_by_id(expected_user.id).unwrap();
         
         assert_eq!(expected_user, deleted_user);
