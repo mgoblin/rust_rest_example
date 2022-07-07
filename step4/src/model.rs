@@ -1,6 +1,12 @@
+use lazy_static::lazy_static;
+use regex::Regex;
 use serde::{Serialize, Deserialize};
-use validator::Validate;
+use validator::{Validate, ValidationErrors, ValidationErrorsKind, ValidationError};
 use std::{error::Error, fmt::Display};
+
+lazy_static! {
+  static ref STARTS_WITH_UPPER_LETTER: Regex = Regex::new(r"^[A-Z][a-zA-Z\d_]+$").unwrap();
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct User {
@@ -12,7 +18,7 @@ pub struct User {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 pub struct UserFields {
-  #[validate(length(min = 4, max = 255))]
+  #[validate(length(min = 4, max = 255), non_control_character, regex = "STARTS_WITH_UPPER_LETTER")]
   pub name: String
 }
 
@@ -20,6 +26,43 @@ pub struct UserFields {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserDAOError {
   pub message: String,
+}
+
+impl UserDAOError {
+  pub fn from_validation_errors(err: &ValidationErrors) -> UserDAOError {
+    
+    fn element_type(err: &ValidationErrorsKind) -> String {
+      match err {
+        ValidationErrorsKind::Struct(_) => String::from("struct"),
+        ValidationErrorsKind::List(_) => String::from("list"),
+        ValidationErrorsKind::Field(_) => String::from("field"),
+      }
+    }
+
+    fn str(err: &ValidationErrorsKind) -> String {
+        match err {
+          ValidationErrorsKind::Struct(v) => format!("{:?}", v),
+          ValidationErrorsKind::List(v) => format!("{:?}", v),
+          ValidationErrorsKind::Field(f) => field_errors_str(f),
+        }
+    }
+
+    fn field_errors_str(f: &Vec<ValidationError>) -> String {
+      let errs_txt: Vec<&str> = f.iter()
+        .map(|e| e.code.as_ref())
+        .collect();
+
+      errs_txt.join(", ")
+    }
+
+    let error_vals: String = err.errors()
+      .iter()
+      .map(|(f, err)|  format!("{}: '{}' errors: '{}'", element_type(err), f, str(err)))
+      .collect::<Vec<String>>()
+      .join("# ");
+      
+    UserDAOError {message: format!("Validation failed for: {}", error_vals) }
+  }
 }
 
 impl Display for UserDAOError {

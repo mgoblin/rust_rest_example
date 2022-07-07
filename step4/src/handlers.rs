@@ -91,7 +91,7 @@ mod tests {
             .to_request();
         let user: User = test::call_and_read_body_json(&app, req).await;
 
-        assert_eq!(User { id: 1, fields: UserFields { name: "user 1".to_string() }}, user);
+        assert_eq!(User { id: 1, fields: UserFields { name: "User1".to_string() }}, user);
     }
 
     #[actix_web::test]
@@ -135,11 +135,11 @@ mod tests {
 
         let req = test::TestRequest::post()
             .uri("/users")
-            .set_payload("user 1")
+            .set_payload("User1")
             .to_request();
         let user: User = test::call_and_read_body_json(&app, req).await;
 
-        assert_eq!(User {id: 1, fields: UserFields { name: "user 1".to_string() }}, user);
+        assert_eq!(User {id: 1, fields: UserFields { name: "User1".to_string() }}, user);
     }
 
     #[actix_web::test]
@@ -157,11 +157,11 @@ mod tests {
 
         let req = test::TestRequest::post()
             .uri("/users/1")
-            .set_payload("user 2")
+            .set_payload("User2")
             .to_request();
         let user: User = test::call_and_read_body_json(&app, req).await;
 
-        assert_eq!(User {id: 1, fields: UserFields{ name: "user 2".to_string() }}, user);
+        assert_eq!(User {id: 1, fields: UserFields{ name: "User2".to_string() }}, user);
     }
 
     #[actix_web::test]
@@ -182,7 +182,7 @@ mod tests {
             .to_request();
         let user: User = test::call_and_read_body_json(&app, req).await;
 
-        assert_eq!(User {id: 1, fields: UserFields{ name: "user 1".to_string() }}, user);
+        assert_eq!(User {id: 1, fields: UserFields{ name: "User1".to_string() }}, user);
     }
 }
 
