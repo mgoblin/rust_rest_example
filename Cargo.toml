@@ -11,8 +11,9 @@ members = [
     "day3_2_generics",
     "day3_3_errors",
 
-    "step1", 
-    "step2",
-    "step3"
+    "step1", # http routes
+    "step2", # json
+    "step3", # configs and unit testing
+    "step4"  # validation and error handling 
     #"step_final"
 ]
