@@ -1,4 +1,4 @@
-use actix_web::{App, HttpServer, web::Data};
+use actix_web::{App, HttpServer, web::{Data, self}};
 use configs::{Configuration, Store};
 use services::UserInMemoryDAO;
 
@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(user_data.clone())
-            .service(handlers::list)
+            .route("/users", web::get().to(handlers::users_list))
             .service(handlers::get_user_by_id)
             .service(handlers::create_user)
             .service(handlers::update_user)
