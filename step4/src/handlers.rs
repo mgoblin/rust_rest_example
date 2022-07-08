@@ -15,16 +15,11 @@ pub async fn get_user_by_id(uid: web::Path<u64>, dao: Data<UserInMemoryDAO>) -> 
 }
 
 #[post("users")]
-pub async fn create_user(body_bytes: web::Bytes, dao: Data<UserInMemoryDAO>) -> impl Responder {
-    let try_body = String::from_utf8(body_bytes.to_vec());
-    match try_body {
-        Ok(body) => {
-            match dao.create(&UserFields { name: body }) {
-                Ok(u) => http_utils::user_as_json(&u),
-                Err(e) => http_utils::user_not_modified(&e)
-            }
-        }, 
-        Err(err) => HttpResponse::BadRequest().body(err.to_string())
+pub async fn create_user(fields: web::Json<UserFields>, dao: Data<UserInMemoryDAO>) -> impl Responder {
+    let user_fields = fields.into_inner();
+    match dao.create(&user_fields)  {
+        Ok(u) => http_utils::user_as_json(&u),
+        Err(e) => http_utils::user_not_modified(&e)
     }
 }
 
@@ -135,7 +130,8 @@ mod tests {
 
         let req = test::TestRequest::post()
             .uri("/users")
-            .set_payload("User1")
+            .insert_header(("Content-type", "application/json"))
+            .set_payload("{ \"name\": \"User1\" }")
             .to_request();
         let user: User = test::call_and_read_body_json(&app, req).await;
 
