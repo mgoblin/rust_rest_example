@@ -1,3 +1,4 @@
+use actix_web::{ResponseError, HttpResponse, http::StatusCode};
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Serialize, Deserialize};
@@ -27,6 +28,8 @@ pub struct UserFields {
 pub struct UserDAOError {
   #[serde(rename(serialize = "error", deserialize = "error"))]
   pub message: String,
+  #[serde(skip)]
+  pub status: u16
 }
 
 impl UserDAOError {
@@ -62,7 +65,7 @@ impl UserDAOError {
       .collect::<Vec<String>>()
       .join("# ");
       
-    UserDAOError {message: format!("Validation failed for: {}", error_vals) }
+    UserDAOError {message: format!("Validation failed for: {}", error_vals), status: StatusCode::BAD_REQUEST.as_u16() }
   }
 }
 
@@ -73,6 +76,15 @@ impl Display for UserDAOError {
 }
 
 impl Error for UserDAOError {}
+
+impl ResponseError for UserDAOError {
+  
+  fn error_response(&self) -> HttpResponse {
+    let err_json = serde_json::json!({ "error": self.message });
+    HttpResponse::build(StatusCode::from_u16(self.status).unwrap()).json(err_json)
+  }
+}
+
 
 #[cfg(test)]
 mod tests {

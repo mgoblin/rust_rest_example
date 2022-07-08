@@ -5,7 +5,6 @@ use services::UserInMemoryDAO;
 
 mod model;
 mod handlers;
-mod http_utils;
 mod services;
 mod configs;
 

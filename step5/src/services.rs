@@ -4,11 +4,12 @@ use crate::configs::InMemory;
 use crate::model::User;
 use crate::model::UserDAOError;
 use crate::model::UserFields;
+use actix_web::http::StatusCode;
 use validator::Validate;
 
 pub trait UserDAO {
     fn list(&self) -> Result<Vec<User>, UserDAOError>;
-    fn find_by_id(&self, id: u64) -> Result<Option<User>, UserDAOError>;
+    fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
     fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
     fn update(&self, user: &User) -> Result<User, UserDAOError>;
     fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
@@ -51,10 +52,16 @@ impl UserDAO for UserInMemoryDAO {
         Ok(users_list)
     }
 
-    fn find_by_id(&self, id: u64) -> Result<Option<User>, UserDAOError> {
+    fn find_by_id(&self, id: u64) -> Result<User, UserDAOError> {
         let guard = self.users.lock().unwrap();
         let users = &*guard;
-        Ok(users.into_iter().find(|u| u.id == id).cloned())
+        users.iter()
+            .find(|&u| u.id == id)
+            .map(|u| u.clone())
+            .ok_or(UserDAOError {
+                message: "User not found".to_string(), 
+                status: StatusCode::NOT_FOUND.as_u16()
+            })
     }
 
     fn create(&self, fields: &UserFields) -> Result<User, UserDAOError> {
@@ -67,7 +74,7 @@ impl UserDAO for UserInMemoryDAO {
         let user_exists = users.into_iter().any(|u| u.fields == *fields);
 
         if user_exists {
-            Err(UserDAOError{ message: String::from("User exists")})
+            Err(UserDAOError{ message: String::from("User exists"), status: StatusCode::BAD_REQUEST.as_u16()})
         } else {
             let max_id = users.into_iter().map(|u| u.id).max();
             let uid = max_id.unwrap_or(0) + 1;
@@ -95,7 +102,7 @@ impl UserDAO for UserInMemoryDAO {
                 users.push(user.clone());
                 Ok(user.clone())
             },
-            None => Err(UserDAOError {message: String::from("User not found")})
+            None => Err(UserDAOError {message: String::from("User not found"), status: StatusCode::BAD_REQUEST.as_u16()})
         }
     }
 
@@ -110,13 +117,15 @@ impl UserDAO for UserInMemoryDAO {
                 let user = users.remove(idx);
                 Ok(user.clone())
             },
-            None => Err(UserDAOError {message: String::from("User not found")})
+            None => Err(UserDAOError {message: String::from("User not found"), status: StatusCode::BAD_REQUEST.as_u16()})
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use actix_web::http::StatusCode;
+
     use crate::{configs::InMemory, model::{User, UserDAOError, UserFields}};
 
     use super::{UserInMemoryDAO, UserDAO};
@@ -140,21 +149,33 @@ mod tests {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 2}));
         let user2 = dao.find_by_id(2);
         let expected = User{ id: 2, fields: UserFields { name: "User2".to_string() }};
-        assert_eq!(Ok(Some(expected)), user2);  
+        assert_eq!(Ok(expected), user2);  
     }
 
     #[test]
     fn test_find_by_id_not_found() {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 2})); 
         let user5 = dao.find_by_id(5);
-        assert_eq!(Ok(None), user5);
+        assert_eq!(
+            Err(
+                UserDAOError { 
+                    message: "User not found".to_string(), 
+                    status: StatusCode::NOT_FOUND.as_u16() 
+                }
+            ), 
+            user5);
     }
 
     #[test]
     fn test_find_by_id_not_found_on_empty_list() {
         let dao = UserInMemoryDAO::new(None); 
         let user5 = dao.find_by_id(1);
-        assert_eq!(Ok(None), user5);
+        assert_eq!(
+            Err(UserDAOError { 
+                message: "User not found".to_string(), 
+                status: StatusCode::NOT_FOUND.as_u16()}
+            ), 
+            user5);
     }
 
     #[test]
@@ -169,21 +190,24 @@ mod tests {
         assert_eq!(true, user_in_list);
 
         let finded_user = dao.find_by_id(expected.id);
-        assert_eq!(Ok(Some(expected)) ,finded_user);
+        assert_eq!(Ok(expected) ,finded_user);
     }
 
     #[test]
     fn test_create_with_existing_name() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
         let result = dao.create(&UserFields { name: "User1".to_string() });
-        assert_eq!(Err(UserDAOError {message: "User exists".to_string()}), result);
+        assert_eq!(Err(UserDAOError {message: "User exists".to_string(), status: StatusCode::BAD_REQUEST.as_u16()}), result);
     }
 
     #[test]
     fn test_create_with_empty_name() {
         let dao = UserInMemoryDAO::new(None);
         let result = dao.create(&UserFields { name: "".to_string() });
-        assert_eq!(Err(UserDAOError {message: "Validation failed for: field: 'name' errors: 'length, regex'".to_string()}), result);
+        assert_eq!(Err(UserDAOError {
+            message: "Validation failed for: field: 'name' errors: 'length, regex'".to_string(),
+            status: StatusCode::BAD_REQUEST.as_u16()
+        }), result);
     }
 
     #[test]
@@ -194,10 +218,10 @@ mod tests {
         assert_eq!(updated_user, user);
 
         let finded_user2= dao.find_by_id(2).unwrap();
-        assert_eq!(Some(updated_user), finded_user2);
+        assert_eq!(updated_user, finded_user2);
 
         let finded_user1 = dao.find_by_id(1).unwrap();
-        assert_eq!(Some(User {id: 1, fields: UserFields { name: "User1".to_string() }}), finded_user1);
+        assert_eq!(User {id: 1, fields: UserFields { name: "User1".to_string() }}, finded_user1);
     }
 
     #[test]
@@ -206,7 +230,7 @@ mod tests {
         let non_existed_user = User {id: 2, fields: UserFields { name: "Test".to_string() }};
         let result = dao.update(&non_existed_user).unwrap_err();
 
-        assert_eq!(UserDAOError { message: "User not found".to_string() }, result);
+        assert_eq!(UserDAOError { message: "User not found".to_string(), status: StatusCode::BAD_REQUEST.as_u16() }, result);
 
         let exists = dao.list().unwrap().contains(&User {id: 1, fields: UserFields { name: "User1".to_string() }});
         assert_eq!(true, exists);
@@ -231,7 +255,7 @@ mod tests {
         assert_eq!(true, dao.list().unwrap().is_empty());
 
         let result = dao.delete_by_id(1).unwrap_err();
-        assert_eq!(UserDAOError {message: "User not found".to_string()}, result);
+        assert_eq!(UserDAOError {message: "User not found".to_string(), status: StatusCode::BAD_REQUEST.as_u16()}, result);
 
         assert_eq!(true, dao.list().unwrap().is_empty());
     }
