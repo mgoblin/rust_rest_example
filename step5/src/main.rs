@@ -1,6 +1,6 @@
 use actix_web::{App, HttpServer, web::{Data, self}};
 use configs::{Configuration, Store};
-use services::UserInMemoryDAO;
+use services::{UserInMemoryDAO, UserDAO};
 
 
 mod model;
@@ -8,16 +8,18 @@ mod handlers;
 mod services;
 mod configs;
 
+fn create_dao(store: &Store) -> Box<dyn UserDAO + 'static> {
+    Box::new(UserInMemoryDAO::new(store.inmemory.as_ref())) 
+}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
     let cfg = &Configuration::load_from_file("application.yaml").unwrap();    
     let store = cfg.store.as_ref().unwrap_or(&Store {inmemory: None});
-    let inmemory = store.inmemory.as_ref();
+    let dao = create_dao(store);
 
-    let user_dao = UserInMemoryDAO::new(inmemory);
-    let user_data = Data::new(user_dao); 
+    let user_data = Data::new(dao); 
 
     HttpServer::new(move || {
         App::new()

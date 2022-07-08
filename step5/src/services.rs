@@ -7,7 +7,7 @@ use crate::model::UserFields;
 use actix_web::http::StatusCode;
 use validator::Validate;
 
-pub trait UserDAO {
+pub trait UserDAO: Sync + Send {
     fn list(&self) -> Result<Vec<User>, UserDAOError>;
     fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
     fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
