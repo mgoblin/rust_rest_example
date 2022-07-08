@@ -1097,6 +1097,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "rest_error_handling"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "config",
+ "lazy_static",
+ "regex",
+ "serde",
+ "serde_json",
+ "validator",
+]
+
+[[package]]
 name = "rest_http_json"
 version = "0.1.0"
 dependencies = [
