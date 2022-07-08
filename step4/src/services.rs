@@ -7,7 +7,7 @@ use crate::model::UserFields;
 use validator::Validate;
 
 pub trait UserDAO {
-    fn list(&self) -> Vec<User>;
+    fn list(&self) -> Result<Vec<User>, UserDAOError>;
     fn find_by_id(&self, id: u64) -> Option<User>;
     fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
     fn update(&self, user: &User) -> Result<User, UserDAOError>;
@@ -44,10 +44,11 @@ impl UserInMemoryDAO {
 
 impl UserDAO for UserInMemoryDAO {
     
-    fn list(&self) -> Vec<User> {
+    fn list(&self) -> Result<Vec<User>, UserDAOError> {
         let guard = self.users.lock().unwrap();
         let users = &*guard;
-        users.clone()
+        let users_list = users.clone();
+        Ok(users_list)
     }
 
     fn find_by_id(&self, id: u64) -> Option<User> {
@@ -124,14 +125,14 @@ mod tests {
     fn test_empty_list() {
         let dao = UserInMemoryDAO::new(None);
         let users = dao.list();
-        assert_eq!(0, users.len());
+        assert_eq!(0, users.unwrap().len());
     }
 
     #[test]
     fn test_non_empty_list() {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 1}));
         let users = dao.list();
-        assert_eq!(users, vec![User { id: 1, fields: UserFields { name: "User1".to_string() }}]);
+        assert_eq!(users, Ok(vec![User { id: 1, fields: UserFields { name: "User1".to_string() }}]));
     }
 
     #[test]
@@ -164,7 +165,7 @@ mod tests {
 
         assert_eq!(expected, user);
 
-        let user_in_list = dao.list().contains(&expected);
+        let user_in_list = dao.list().unwrap().contains(&expected);
         assert_eq!(true, user_in_list);
 
         let finded_user = dao.find_by_id(expected.id);
@@ -207,32 +208,32 @@ mod tests {
 
         assert_eq!(UserDAOError { message: "User not found".to_string() }, result);
 
-        let exists = dao.list().contains(&User {id: 1, fields: UserFields { name: "User1".to_string() }});
+        let exists = dao.list().unwrap().contains(&User {id: 1, fields: UserFields { name: "User1".to_string() }});
         assert_eq!(true, exists);
     }
 
     #[test]
     fn test_delete_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
-        assert_eq!(false, dao.list().is_empty());
+        assert_eq!(false, dao.list().unwrap().is_empty());
 
         let expected_user = User {id: 1, fields: UserFields { name: "User1".to_string() }};
         let deleted_user = dao.delete_by_id(expected_user.id).unwrap();
         
         assert_eq!(expected_user, deleted_user);
 
-        assert_eq!(true, dao.list().is_empty());
+        assert_eq!(true, dao.list().unwrap().is_empty());
     }
 
     #[test]
     fn test_delete_not_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 0}));
-        assert_eq!(true, dao.list().is_empty());
+        assert_eq!(true, dao.list().unwrap().is_empty());
 
         let result = dao.delete_by_id(1).unwrap_err();
         assert_eq!(UserDAOError {message: "User not found".to_string()}, result);
 
-        assert_eq!(true, dao.list().is_empty());
+        assert_eq!(true, dao.list().unwrap().is_empty());
     }
 
 }
