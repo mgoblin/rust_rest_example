@@ -1,18 +1,9 @@
-use actix_web::{Responder, web::{self, Data}, get, post, delete, HttpResponse, http::{StatusCode, header::ContentType}};
+use actix_web::{Responder, web::{self, Data}, get, post, delete, HttpResponse};
 
 use crate::{http_utils, services::{UserInMemoryDAO, UserDAO}, model::{User, UserFields}};
 
 pub async fn users_list(dao: Data<UserInMemoryDAO>) -> impl Responder {
-    match dao.list() {
-        Ok(list) => 
-            HttpResponse::build(StatusCode::OK)
-                .content_type(ContentType::json())
-                .body(serde_json::to_vec_pretty(&list).unwrap()),
-        Err(err) => 
-            HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR)
-                .content_type(ContentType::json())
-                .body(serde_json::to_string_pretty(&err).unwrap())
-    }
+    web::Json(dao.list().unwrap())
 }
 
 #[get("users/{id}")]
