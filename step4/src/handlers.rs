@@ -1,4 +1,4 @@
-use actix_web::{Responder, web::{self, Data}, get, post, delete, HttpResponse};
+use actix_web::{Responder, web::{self, Data}, get, post, delete};
 
 use crate::{http_utils, services::{UserInMemoryDAO, UserDAO}, model::{User, UserFields}};
 
@@ -24,17 +24,12 @@ pub async fn create_user(fields: web::Json<UserFields>, dao: Data<UserInMemoryDA
 }
 
 #[post("users/{id}")]
-pub async fn update_user(uid: web::Path<u64>, body_bytes: web::Bytes, dao: Data<UserInMemoryDAO>) -> impl Responder {
-    let try_body = String::from_utf8(body_bytes.to_vec());
-    match try_body {
-        Ok(body) => {
-            let user = User {id: uid.into_inner(), fields: UserFields { name: body }};
-            match dao.update(&user) {
-                Ok(u) => http_utils::user_as_json(&u),
-                Err(e) => http_utils::user_not_modified(&e)
-            }
-        },
-        Err(err) => HttpResponse::BadRequest().body(err.to_string())
+pub async fn update_user(uid: web::Path<u64>, fields: web::Json<UserFields>, dao: Data<UserInMemoryDAO>) -> impl Responder {
+    let users_fields = fields.into_inner();
+    let user = User {id: uid.into_inner(), fields: users_fields};
+    match dao.update(&user) {
+        Ok(u) => http_utils::user_as_json(&u),
+        Err(e) => http_utils::user_not_modified(&e)
     }
 }
 
@@ -153,7 +148,8 @@ mod tests {
 
         let req = test::TestRequest::post()
             .uri("/users/1")
-            .set_payload("User2")
+            .insert_header(("Content-type", "application/json"))
+            .set_payload("{\"name\": \"User2\"}")
             .to_request();
         let user: User = test::call_and_read_body_json(&app, req).await;
 

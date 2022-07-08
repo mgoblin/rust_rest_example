@@ -1,5 +1,5 @@
 [package]
-name = "rest_validation_and_error_handling"
+name = "rest_validation"
 version = "0.1.0"
 edition = "2021"
 
