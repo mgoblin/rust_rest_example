@@ -17,7 +17,7 @@ pub async fn users_list(dao: Data<UserInMemoryDAO>) -> impl Responder {
 
 #[get("users/{id}")]
 pub async fn get_user_by_id(uid: web::Path<u64>, dao: Data<UserInMemoryDAO>) -> impl Responder {
-    match dao.find_by_id(uid.into_inner()) {
+    match dao.find_by_id(uid.into_inner()).unwrap() {
         Some(u) => http_utils::user_as_json(&u),
         None => http_utils::user_not_found()
     }
