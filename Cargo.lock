@@ -1097,7 +1097,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rest_error_handling"
+name = "rest_error_handling_and_dep_injection"
 version = "0.1.0"
 dependencies = [
  "actix-web",
