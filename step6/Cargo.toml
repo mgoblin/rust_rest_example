@@ -21,3 +21,7 @@ actix-web = "4.1.0"
 
 # config
 config = "0.13.1"
+
+# database
+postgres = "0.19.3"
+tokio-postgres = "0.7.6"
