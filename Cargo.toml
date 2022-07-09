@@ -15,6 +15,7 @@ members = [
     "step2", # json
     "step3", # configs and unit testing
     "step4", # validation
-    "step5"  # error handling
+    "step5", # error handling and dependency injection
+    "step6"  # database
     #"step_final"
 ]
