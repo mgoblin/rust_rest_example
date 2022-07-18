@@ -15,7 +15,7 @@ pub trait UserDAO: Sync + Send
     async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
     async fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
     async fn update(&self, user: &User) -> Result<User, UserDAOError>;
-    fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
+    async fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
 }
 
 
@@ -111,7 +111,7 @@ impl UserDAO for UserInMemoryDAO {
         }
     }
 
-    fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError> {
+    async fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError> {
         let mut guard = self.users.lock().unwrap();
         let users = &mut *guard;
 
@@ -248,7 +248,7 @@ mod tests {
         assert_eq!(false, block_on(dao.list()).unwrap().is_empty());
 
         let expected_user = User {id: 1, fields: UserFields { name: "User1".to_string() }};
-        let deleted_user = dao.delete_by_id(expected_user.id).unwrap();
+        let deleted_user = block_on(dao.delete_by_id(expected_user.id)).unwrap();
         
         assert_eq!(expected_user, deleted_user);
 
@@ -260,7 +260,7 @@ mod tests {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 0}));
         assert_eq!(true, block_on(dao.list()).unwrap().is_empty());
 
-        let result = dao.delete_by_id(1).unwrap_err();
+        let result = block_on(dao.delete_by_id(1)).unwrap_err();
         assert_eq!(UserDAOError {message: "User not found".to_string(), status: StatusCode::BAD_REQUEST.as_u16()}, result);
 
         assert_eq!(true, block_on(dao.list()).unwrap().is_empty());

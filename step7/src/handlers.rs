@@ -25,7 +25,7 @@ pub async fn update_user(uid: web::Path<u64>, fields: web::Json<UserFields>, dao
 
 #[delete("/users/{id}")]
 pub async fn delete_user(uid: web::Path<u64>, dao: Data<Box<dyn UserDAO>>) -> Result<web::Json<User>, UserDAOError> {
-    dao.delete_by_id(uid.into_inner()).map(|user| web::Json(user))
+    dao.delete_by_id(uid.into_inner()).await.map(|user| web::Json(user))
 }
 
 #[cfg(test)]
