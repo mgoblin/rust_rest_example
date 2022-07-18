@@ -14,7 +14,7 @@ pub trait UserDAO: Sync + Send
     async fn list(&self) -> Result<Vec<User>, UserDAOError>;
     async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
     async fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
-    fn update(&self, user: &User) -> Result<User, UserDAOError>;
+    async fn update(&self, user: &User) -> Result<User, UserDAOError>;
     fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
 }
 
@@ -92,7 +92,7 @@ impl UserDAO for UserInMemoryDAO {
         }
     }
 
-    fn update(&self, user: &User) -> Result<User, UserDAOError> {
+    async fn update(&self, user: &User) -> Result<User, UserDAOError> {
         
         UserInMemoryDAO::validate_fields(&user.fields)?;
 
@@ -220,7 +220,7 @@ mod tests {
     fn test_update_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 2}));
         let updated_user = User {id: 2, fields: UserFields { name: "Update_user".to_string() } };
-        let user = dao.update(&updated_user).unwrap();
+        let user = block_on(dao.update(&updated_user)).unwrap();
         assert_eq!(updated_user, user);
 
         let finded_user2= block_on(dao.find_by_id(2)).unwrap();
@@ -234,7 +234,7 @@ mod tests {
     fn test_update_non_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
         let non_existed_user = User {id: 2, fields: UserFields { name: "Test".to_string() }};
-        let result = dao.update(&non_existed_user).unwrap_err();
+        let result = block_on(dao.update(&non_existed_user)).unwrap_err();
 
         assert_eq!(UserDAOError { message: "User not found".to_string(), status: StatusCode::BAD_REQUEST.as_u16() }, result);
 

@@ -20,7 +20,7 @@ pub async fn create_user(fields: web::Json<UserFields>, dao: Data<Box<dyn UserDA
 pub async fn update_user(uid: web::Path<u64>, fields: web::Json<UserFields>, dao: Data<Box<dyn UserDAO>>) -> impl Responder {
     let users_fields = fields.into_inner();
     let user = User {id: uid.into_inner(), fields: users_fields};
-    dao.update(&user).map(|user| web::Json(user))
+    dao.update(&user).await.map(|user| web::Json(user))
 }
 
 #[delete("/users/{id}")]
