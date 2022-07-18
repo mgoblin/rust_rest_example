@@ -26,5 +26,8 @@ config = "0.13.1"
 #postgres = "0.19.3"
 tokio-postgres = "0.7.6"
 
+# orm
+rbatis = "3.1.15"
+
 # async framework
 tokio = { version = "1.20.0", features = ["full"] }
