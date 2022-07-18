@@ -13,7 +13,7 @@ pub async fn get_user_by_id(uid: web::Path<u64>, dao: Data<Box<dyn UserDAO>>) ->
 
 #[post("users")]
 pub async fn create_user(fields: web::Json<UserFields>, dao: Data<Box<dyn UserDAO>>) -> Result<web::Json<User>, UserDAOError> {
-    dao.create(&fields).map(|user| web::Json(user))
+    dao.create(&fields).await.map(|user| web::Json(user))
 }
 
 #[post("users/{id}")]

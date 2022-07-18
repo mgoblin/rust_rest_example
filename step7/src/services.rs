@@ -13,7 +13,7 @@ pub trait UserDAO: Sync + Send
 {
     async fn list(&self) -> Result<Vec<User>, UserDAOError>;
     async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
-    fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
+    async fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
     fn update(&self, user: &User) -> Result<User, UserDAOError>;
     fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
 }
@@ -69,7 +69,7 @@ impl UserDAO for UserInMemoryDAO {
             })
     }
 
-    fn create(&self, fields: &UserFields) -> Result<User, UserDAOError> {
+    async fn create(&self, fields: &UserFields) -> Result<User, UserDAOError> {
         
         UserInMemoryDAO::validate_fields(&fields)?;
 
@@ -187,7 +187,7 @@ mod tests {
     #[test]
     fn test_create_on_empty_list() {
         let dao = UserInMemoryDAO::new(None);
-        let user = dao.create(&UserFields { name: "User".to_string() }).unwrap();
+        let user = block_on(dao.create(&UserFields { name: "User".to_string() })).unwrap();
         let expected = User { id: 1, fields: UserFields{ name: "User".to_string() }};
 
         assert_eq!(expected, user);
@@ -202,14 +202,14 @@ mod tests {
     #[test]
     fn test_create_with_existing_name() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
-        let result = dao.create(&UserFields { name: "User1".to_string() });
+        let result = block_on(dao.create(&UserFields { name: "User1".to_string() }));
         assert_eq!(Err(UserDAOError {message: "User exists".to_string(), status: StatusCode::BAD_REQUEST.as_u16()}), result);
     }
 
     #[test]
     fn test_create_with_empty_name() {
         let dao = UserInMemoryDAO::new(None);
-        let result = dao.create(&UserFields { name: "".to_string() });
+        let result = block_on(dao.create(&UserFields { name: "".to_string() }));
         assert_eq!(Err(UserDAOError {
             message: "Validation failed for: field: 'name' errors: 'length, regex'".to_string(),
             status: StatusCode::BAD_REQUEST.as_u16()
