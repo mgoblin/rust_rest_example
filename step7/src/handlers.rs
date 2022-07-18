@@ -8,7 +8,7 @@ pub async fn users_list(dao: Data<Box<dyn UserDAO>>) -> Result<web::Json<Vec<Use
 
 #[get("users/{id}")]
 pub async fn get_user_by_id(uid: web::Path<u64>, dao: Data<Box<dyn UserDAO>>) -> Result<web::Json<User>, UserDAOError> {
-    dao.find_by_id(uid.into_inner()).map(|user| web::Json(user))
+    dao.find_by_id(uid.into_inner()).await.map(|user| web::Json(user))
 }
 
 #[post("users")]

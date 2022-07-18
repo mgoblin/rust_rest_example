@@ -12,7 +12,7 @@ use validator::Validate;
 pub trait UserDAO: Sync + Send
 {
     async fn list(&self) -> Result<Vec<User>, UserDAOError>;
-    fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
+    async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
     fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
     fn update(&self, user: &User) -> Result<User, UserDAOError>;
     fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
@@ -57,7 +57,7 @@ impl UserDAO for UserInMemoryDAO {
         Ok(users_list)
     }
 
-    fn find_by_id(&self, id: u64) -> Result<User, UserDAOError> {
+    async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError> {
         let guard = self.users.lock().unwrap();
         let users = &*guard;
         users.iter()
@@ -153,7 +153,7 @@ mod tests {
     #[test]
     fn test_find_by_id_ok() {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 2}));
-        let user2 = dao.find_by_id(2);
+        let user2 = block_on(dao.find_by_id(2));
         let expected = User{ id: 2, fields: UserFields { name: "User2".to_string() }};
         assert_eq!(Ok(expected), user2);  
     }
@@ -161,7 +161,7 @@ mod tests {
     #[test]
     fn test_find_by_id_not_found() {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 2})); 
-        let user5 = dao.find_by_id(5);
+        let user5 = block_on(dao.find_by_id(5));
         assert_eq!(
             Err(
                 UserDAOError { 
@@ -175,7 +175,7 @@ mod tests {
     #[test]
     fn test_find_by_id_not_found_on_empty_list() {
         let dao = UserInMemoryDAO::new(None); 
-        let user5 = dao.find_by_id(1);
+        let user5 = block_on(dao.find_by_id(1));
         assert_eq!(
             Err(UserDAOError { 
                 message: "User not found".to_string(), 
@@ -195,7 +195,7 @@ mod tests {
         let user_in_list = block_on(dao.list()).unwrap().contains(&expected);
         assert_eq!(true, user_in_list);
 
-        let finded_user = dao.find_by_id(expected.id);
+        let finded_user = block_on(dao.find_by_id(expected.id));
         assert_eq!(Ok(expected) ,finded_user);
     }
 
@@ -223,10 +223,10 @@ mod tests {
         let user = dao.update(&updated_user).unwrap();
         assert_eq!(updated_user, user);
 
-        let finded_user2= dao.find_by_id(2).unwrap();
+        let finded_user2= block_on(dao.find_by_id(2)).unwrap();
         assert_eq!(updated_user, finded_user2);
 
-        let finded_user1 = dao.find_by_id(1).unwrap();
+        let finded_user1 = block_on(dao.find_by_id(1)).unwrap();
         assert_eq!(User {id: 1, fields: UserFields { name: "User1".to_string() }}, finded_user1);
     }
 
