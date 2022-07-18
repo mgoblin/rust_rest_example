@@ -1,5 +1,6 @@
 use std::sync::Mutex;
 
+use crate::configs::Db;
 use crate::configs::InMemory;
 use crate::model::User;
 use crate::model::UserDAOError;
@@ -124,6 +125,39 @@ impl UserDAO for UserInMemoryDAO {
             },
             None => Err(UserDAOError {message: String::from("User not found"), status: StatusCode::BAD_REQUEST.as_u16()})
         }
+    }
+}
+
+pub struct UserDbDAO {
+
+}
+
+impl UserDbDAO {
+    pub fn new(cfg: &Db) -> UserDbDAO {
+        UserDbDAO {}
+    }
+}
+
+#[async_trait]
+impl UserDAO for UserDbDAO {
+    async fn list(&self) -> Result<Vec<User>, UserDAOError> {
+        Ok(vec![User {id: 1, fields: UserFields {name: "Test_User".to_string()}}])
+    }
+
+    async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError> {
+        todo!()
+    }
+
+    async fn create(&self, fields: &UserFields) -> Result<User, UserDAOError> {
+        todo!()
+    }
+
+    async fn update(&self, user: &User) -> Result<User, UserDAOError> {
+        todo!()
+    }
+
+    async fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError> {
+        todo!()
     }
 }
 

@@ -3,5 +3,10 @@ server:
   port: 9090
 
 store:
-  inmemory:
-    users: 10  
+  # inmemory:
+  #   users: 10
+  db:
+    host: localhost
+    db_name: users 
+    user: rw_user
+    password: 123qweasd   

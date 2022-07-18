@@ -15,12 +15,22 @@ pub struct ServerConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Store {
-    pub inmemory: Option<InMemory>
+    pub inmemory: Option<InMemory>,
+    pub db: Option<Db>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct InMemory {
     pub users: u16
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Db {
+    pub host: String,
+    pub port: Option<u16>,
+    pub db_name: String,
+    pub user: String,
+    pub password: Option<String>,
 }
 
 impl Configuration {
@@ -52,7 +62,8 @@ mod tests {
                 store: Some(Store {
                     inmemory: Some(InMemory{
                         users: 10,
-                    })
+                    }),
+                    db: None,
                 }),
             },  
             cfg
