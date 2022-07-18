@@ -47,7 +47,7 @@ impl Configuration {
 
 #[cfg(test)]
 mod tests {
-    use crate::configs::{ServerConfig, Store, InMemory};
+    use crate::configs::{ServerConfig, Store, InMemory, Db};
     use super::Configuration;
 
     #[test]
@@ -152,6 +152,31 @@ mod tests {
     fn test_invalid_port_format() {
         let result = Configuration::load_from_file("tests/server_empty.yaml").unwrap_err();
         assert_eq!("invalid type: unit value, expected struct ServerConfig", result.to_string());
+    }
+
+    #[test]
+    fn test_load_db_config() {
+        let cfg = Configuration::load_from_file("tests/db_full.yaml").unwrap();
+
+        assert_eq!(
+            Configuration {
+                server: ServerConfig {
+                    host: "0.0.0.0".to_string(),
+                    port: 8080
+                },
+                store: Some(Store {
+                    inmemory: None, 
+                    db: Some(Db {
+                        host:"localhost".to_string(),
+                        port:Some(5432), 
+                        db_name: "users".to_string(), 
+                        user: "rw_user".to_string(), 
+                        password: Some("123qweasd".to_string()), 
+                    }),
+                })
+            },
+            cfg
+        );
     }
 }
 
