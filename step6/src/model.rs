@@ -33,6 +33,7 @@ pub struct UserDAOError {
 }
 
 impl UserDAOError {
+  #![allow(dead_code)]
   pub fn from_validation_errors(err: &ValidationErrors) -> UserDAOError {
     
     fn element_type(err: &ValidationErrorsKind) -> String {
