@@ -5,15 +5,19 @@ use crate::model::User;
 use crate::model::UserDAOError;
 use crate::model::UserFields;
 use actix_web::http::StatusCode;
+use async_trait::async_trait;
 use validator::Validate;
 
-pub trait UserDAO: Sync + Send {
-    fn list(&self) -> Result<Vec<User>, UserDAOError>;
+#[async_trait]  
+pub trait UserDAO: Sync + Send
+{
+    async fn list(&self) -> Result<Vec<User>, UserDAOError>;
     fn find_by_id(&self, id: u64) -> Result<User, UserDAOError>;
     fn create(&self, fields: &UserFields) -> Result<User, UserDAOError>;
     fn update(&self, user: &User) -> Result<User, UserDAOError>;
     fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError>;
 }
+
 
 pub struct UserInMemoryDAO {
     users: Mutex<Vec<User>>,
@@ -43,9 +47,10 @@ impl UserInMemoryDAO {
     }
 }
 
+#[async_trait]
 impl UserDAO for UserInMemoryDAO {
     
-    fn list(&self) -> Result<Vec<User>, UserDAOError> {
+    async fn list(&self) -> Result<Vec<User>, UserDAOError> {
         let guard = self.users.lock().unwrap();
         let users = &*guard;
         let users_list = users.clone();
@@ -125,6 +130,7 @@ impl UserDAO for UserInMemoryDAO {
 #[cfg(test)]
 mod tests {
     use actix_web::http::StatusCode;
+    use futures::executor::block_on;
 
     use crate::{configs::InMemory, model::{User, UserDAOError, UserFields}};
 
@@ -133,14 +139,14 @@ mod tests {
     #[test]
     fn test_empty_list() {
         let dao = UserInMemoryDAO::new(None);
-        let users = dao.list();
+        let users = block_on(dao.list());
         assert_eq!(0, users.unwrap().len());
     }
 
     #[test]
     fn test_non_empty_list() {
         let dao = UserInMemoryDAO::new(Some(&InMemory { users: 1}));
-        let users = dao.list();
+        let users = block_on(dao.list());
         assert_eq!(users, Ok(vec![User { id: 1, fields: UserFields { name: "User1".to_string() }}]));
     }
 
@@ -186,7 +192,7 @@ mod tests {
 
         assert_eq!(expected, user);
 
-        let user_in_list = dao.list().unwrap().contains(&expected);
+        let user_in_list = block_on(dao.list()).unwrap().contains(&expected);
         assert_eq!(true, user_in_list);
 
         let finded_user = dao.find_by_id(expected.id);
@@ -232,32 +238,32 @@ mod tests {
 
         assert_eq!(UserDAOError { message: "User not found".to_string(), status: StatusCode::BAD_REQUEST.as_u16() }, result);
 
-        let exists = dao.list().unwrap().contains(&User {id: 1, fields: UserFields { name: "User1".to_string() }});
+        let exists = block_on(dao.list()).unwrap().contains(&User {id: 1, fields: UserFields { name: "User1".to_string() }});
         assert_eq!(true, exists);
     }
 
     #[test]
     fn test_delete_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 1}));
-        assert_eq!(false, dao.list().unwrap().is_empty());
+        assert_eq!(false, block_on(dao.list()).unwrap().is_empty());
 
         let expected_user = User {id: 1, fields: UserFields { name: "User1".to_string() }};
         let deleted_user = dao.delete_by_id(expected_user.id).unwrap();
         
         assert_eq!(expected_user, deleted_user);
 
-        assert_eq!(true, dao.list().unwrap().is_empty());
+        assert_eq!(true, block_on(dao.list()).unwrap().is_empty());
     }
 
     #[test]
     fn test_delete_not_existed() {
         let dao = UserInMemoryDAO::new(Some(&InMemory {users: 0}));
-        assert_eq!(true, dao.list().unwrap().is_empty());
+        assert_eq!(true, block_on(dao.list()).unwrap().is_empty());
 
         let result = dao.delete_by_id(1).unwrap_err();
         assert_eq!(UserDAOError {message: "User not found".to_string(), status: StatusCode::BAD_REQUEST.as_u16()}, result);
 
-        assert_eq!(true, dao.list().unwrap().is_empty());
+        assert_eq!(true, block_on(dao.list()).unwrap().is_empty());
     }
 
 }

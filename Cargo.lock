@@ -1809,7 +1809,9 @@ name = "rest_database_orm"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "async-trait",
  "config",
+ "futures",
  "lazy_static",
  "rbatis",
  "regex",

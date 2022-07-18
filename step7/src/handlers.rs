@@ -1,9 +1,9 @@
 use actix_web::{Responder, web::{self, Data}, get, post, delete};
 
-use crate::{services::UserDAO, model::{User, UserFields, UserDAOError}};
+use crate::{services::{UserDAO}, model::{User, UserFields, UserDAOError}};
 
 pub async fn users_list(dao: Data<Box<dyn UserDAO>>) -> Result<web::Json<Vec<User>>, UserDAOError> {
-    dao.list().map(|list| web::Json(list))
+    dao.list().await.map(|list| web::Json(list))
 }
 
 #[get("users/{id}")]
