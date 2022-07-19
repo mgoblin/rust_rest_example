@@ -149,6 +149,7 @@ impl UserDbDAO {
     pub async fn new(cfg: &Db) -> UserDbDAO {
         let rbatis = Rbatis::new();
         let conn_str = UserDbDAO::connection_str(cfg);
+
         rbatis.link(&conn_str).await.expect("rbatis not linked to db");
 
         UserDbDAO {
@@ -174,7 +175,14 @@ impl UserDAO for UserDbDAO {
         let user = self.rb.fetch_by_column::<DbUser, u64>("id", id).await;
         user
             .map (|db_user| User { id: db_user.id, fields: UserFields {name: db_user.name.clone()} })
-            .map_err(|err| UserDAOError {status: 500, message: err.to_string()})
+            .map_err(|err| {
+                match err {
+                    rbatis::Error::E(_) => UserDAOError {status: 404, message: "User not found".to_string()},
+                    rbatis::Error::Deserialize(msg) => UserDAOError {status: 500, message: msg.to_string()},
+                    rbatis::Error::Database(msg) => UserDAOError {status: 500, message: msg.to_string()},
+                    _ => UserDAOError {status: 500, message: "Unexpected error".to_string()},
+                }
+            })
 
     }
 
