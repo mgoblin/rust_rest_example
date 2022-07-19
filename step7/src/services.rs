@@ -8,7 +8,6 @@ use crate::model::UserDAOError;
 use crate::model::UserFields;
 use actix_web::http::StatusCode;
 use async_trait::async_trait;
-use futures::executor::block_on;
 use rbatis::crud::CRUD;
 use rbatis::rbatis::Rbatis;
 use validator::Validate;
@@ -172,7 +171,11 @@ impl UserDAO for UserDbDAO {
     }
 
     async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError> {
-        todo!()
+        let user = self.rb.fetch_by_column::<DbUser, u64>("id", id).await;
+        user
+            .map (|db_user| User { id: db_user.id, fields: UserFields {name: db_user.name.clone()} })
+            .map_err(|err| UserDAOError {status: 500, message: err.to_string()})
+
     }
 
     async fn create(&self, fields: &UserFields) -> Result<User, UserDAOError> {
