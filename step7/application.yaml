@@ -7,6 +7,7 @@ store:
   #   users: 10
   db:
     host: localhost
+    port: 5432
     db_name: users 
     user: rw_user
     password: 123qweasd   

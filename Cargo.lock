@@ -1814,6 +1814,7 @@ dependencies = [
  "futures",
  "lazy_static",
  "rbatis",
+ "rbson",
  "regex",
  "serde",
  "serde_json",

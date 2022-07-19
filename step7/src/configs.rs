@@ -27,10 +27,10 @@ pub struct InMemory {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Db {
     pub host: String,
-    pub port: Option<u16>,
+    pub port: u16,
     pub db_name: String,
     pub user: String,
-    pub password: Option<String>,
+    pub password: String,
 }
 
 impl Configuration {
@@ -168,10 +168,10 @@ mod tests {
                     inmemory: None, 
                     db: Some(Db {
                         host:"localhost".to_string(),
-                        port:Some(5432), 
+                        port:5432, 
                         db_name: "users".to_string(), 
                         user: "rw_user".to_string(), 
-                        password: Some("123qweasd".to_string()), 
+                        password: "123qweasd".to_string(), 
                     }),
                 })
             },

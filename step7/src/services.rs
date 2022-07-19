@@ -2,11 +2,15 @@ use std::sync::Mutex;
 
 use crate::configs::Db;
 use crate::configs::InMemory;
+use crate::model::DbUser;
 use crate::model::User;
 use crate::model::UserDAOError;
 use crate::model::UserFields;
 use actix_web::http::StatusCode;
 use async_trait::async_trait;
+use futures::executor::block_on;
+use rbatis::crud::CRUD;
+use rbatis::rbatis::Rbatis;
 use validator::Validate;
 
 #[async_trait]  
@@ -129,19 +133,42 @@ impl UserDAO for UserInMemoryDAO {
 }
 
 pub struct UserDbDAO {
-
+    rb: Rbatis,
 }
 
 impl UserDbDAO {
-    pub fn new(cfg: &Db) -> UserDbDAO {
-        UserDbDAO {}
+    fn connection_str(cfg: &Db) -> String {
+        format!("postgres://{2}:{3}@{0}:{4}/{1}", 
+            cfg.host, 
+            cfg.db_name,
+            cfg.user,
+            cfg.password,
+            cfg.port
+        )
+    }
+
+    pub async fn new(cfg: &Db) -> UserDbDAO {
+        let rbatis = Rbatis::new();
+        let conn_str = UserDbDAO::connection_str(cfg);
+        rbatis.link(&conn_str).await.expect("rbatis not linked to db");
+
+        UserDbDAO {
+            rb: rbatis,
+        }
     }
 }
 
 #[async_trait]
 impl UserDAO for UserDbDAO {
     async fn list(&self) -> Result<Vec<User>, UserDAOError> {
-        Ok(vec![User {id: 1, fields: UserFields {name: "Test_User".to_string()}}])
+        let users = self.rb.fetch_list::<DbUser>().await;
+        users
+            .map(|db_users| {
+                db_users.iter()
+                    .map(|db_user | User { id: db_user.id, fields: UserFields {name: db_user.name.clone()} })
+                    .collect()
+            } )
+            .map_err(|err| UserDAOError {status: 500, message: err.to_string()})
     }
 
     async fn find_by_id(&self, id: u64) -> Result<User, UserDAOError> {

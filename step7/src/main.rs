@@ -8,12 +8,12 @@ mod handlers;
 mod services;
 mod configs;
 
-fn create_dao(store: &Store) -> std::io::Result<Box<dyn UserDAO + 'static>> {
+async fn create_dao(store: &Store) -> std::io::Result<Box<dyn UserDAO + 'static>> {
     match &store {
         &Store { inmemory: Some(im), db: None } => 
             Ok(Box::new(UserInMemoryDAO::new(Some(&im)))),
         &Store { inmemory: None, db: Some(dbcfg) } => 
-            Ok(Box::new(UserDbDAO::new(&dbcfg))), 
+            Ok(Box::new(UserDbDAO::new(&dbcfg).await)), 
         &Store { inmemory: None, db: None } => 
             Ok(Box::new(UserInMemoryDAO::new(store.inmemory.as_ref()))),
         &Store { inmemory: Some(_), db: Some(_) } => 
@@ -32,9 +32,10 @@ async fn main() -> std::io::Result<()> {
         },
         Ok(cfg) => {
             let store = cfg.store.as_ref().unwrap_or(&Store {inmemory: None, db: None});
-            let dao = create_dao(store)?; 
-            let user_data = Data::new(dao);
+            let dao = create_dao(store).await?; 
             
+            let user_data = Data::new(dao);
+
             HttpServer::new(move || {
                 App::new()
                     .app_data(user_data.clone())

@@ -1,5 +1,6 @@
 use actix_web::{ResponseError, HttpResponse, http::StatusCode};
 use lazy_static::lazy_static;
+use rbatis::crud_table;
 use regex::Regex;
 use serde::{Serialize, Deserialize};
 use validator::{Validate, ValidationErrors, ValidationErrorsKind, ValidationError};
@@ -7,6 +8,13 @@ use std::{error::Error, fmt::Display};
 
 lazy_static! {
   static ref STARTS_WITH_UPPER_LETTER: Regex = Regex::new(r"^[A-Z][a-zA-Z\d_]+$").unwrap();
+}
+
+#[crud_table(table_name: "users_schema.users")]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct DbUser {
+  pub id: u64,
+  pub name: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
