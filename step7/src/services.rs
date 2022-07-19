@@ -9,7 +9,9 @@ use crate::model::UserFields;
 use actix_web::http::StatusCode;
 use async_trait::async_trait;
 use rbatis::crud::CRUD;
+use rbatis::py_sql;
 use rbatis::rbatis::Rbatis;
+use rbatis::rb_py;
 use validator::Validate;
 
 #[async_trait]  
@@ -156,6 +158,12 @@ impl UserDbDAO {
             rb: rbatis,
         }
     }
+
+    #[py_sql("insert into users_schema.users(name) values ( #{uname} ) RETURNING id;")]
+    async fn insert_with_identity(rb: &Rbatis, uname: &str) -> u64 { rbatis::impled!(); }
+
+    #[py_sql("update users_schema.users set name = #{uuser.name} where id = #{uuser.id} RETURNING id;")]
+    async fn update_by_id(rb: &Rbatis, uuser: &DbUser) -> u64 { rbatis::impled!(); }
 }
 
 #[async_trait]
@@ -187,15 +195,32 @@ impl UserDAO for UserDbDAO {
     }
 
     async fn create(&self, fields: &UserFields) -> Result<User, UserDAOError> {
-        todo!()
+        
+        UserInMemoryDAO::validate_fields(&fields)?;
+
+        let uid: u64 = UserDbDAO::insert_with_identity(&self.rb, &fields.name)
+            .await
+            .map_err(|err: rbatis::Error| UserDAOError {status: 400, message: err.to_string()})?;
+
+        Ok(User {id: uid, fields: fields.clone()})          
     }
 
     async fn update(&self, user: &User) -> Result<User, UserDAOError> {
-        todo!()
+        UserInMemoryDAO::validate_fields(&user.fields)?;
+
+        let db_user = DbUser {id: user.id, name: user.fields.name.clone()};
+        UserDbDAO::update_by_id(&self.rb, &db_user)
+            .await
+            .map_err(|err: rbatis::Error| UserDAOError {status: 400, message: err.to_string()})?;
+        
+        Ok(user.clone())
     }
 
     async fn delete_by_id(&self, id: u64) -> Result<User, UserDAOError> {
-        todo!()
+        let user = self.find_by_id(id).await?;
+        self.rb.remove_by_column::<DbUser, u64>("id", id).await
+            .map_err(|err: rbatis::Error| UserDAOError {status: 500, message: err.to_string()})?;
+        Ok(user)
     }
 }
 
